@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/pro-2/pro-2.iml" filepath="$PROJECT_DIR$/pro-2/pro-2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pro24-book/pro24-book.iml" filepath="$PROJECT_DIR$/pro24-book/pro24-book.iml" />
+      <module fileurl="file://$PROJECT_DIR$/salesmanagement/salesmanagement.iml" filepath="$PROJECT_DIR$/salesmanagement/salesmanagement.iml" />
+      <module fileurl="file://$PROJECT_DIR$/untitled.iml" filepath="$PROJECT_DIR$/untitled.iml" />
+    </modules>
+  </component>
+</project>
