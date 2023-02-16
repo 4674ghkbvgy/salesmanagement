@@ -3,11 +3,12 @@
 <%@ page import="com.dgut.entity.User" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.dgut.entity.Goods" %>
+<%@ page import="com.dgut.entity.Contract" %>
 <%@ page pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="mycss/index.css">
+    <link rel="stylesheet" type="text/css" href="mycss/index.css?v=2">
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -71,26 +72,27 @@
 <%--style=" background: url(img/page.png);background-size: cover;"--%>
 <p> </p>
 <h1>公司销售管理系统</h1>
-<p>
-    <a href="login.jsp">登录页面</a>
-</p>
-<p>
-    <a href="regist.jsp">注册页面</a>
-</p>
+
+<p> </p>
+<a href="login.jsp">登录页面</a> <a href="regist.jsp">注册页面</a>
+<p> </p>
 <%
     User user = (User) session.getAttribute("user");
 %>
 <%
     List<Goods> goodsList = (List<Goods>) request.getAttribute("goodsList");
     List<User> salespersonList= (List<User>) request.getAttribute("salespersonList");
+    List<Contract> contractList =(List<Contract>) request.getAttribute("contractList");
+
 //    Goods[] goodsArray = goodsList.toArray(new Goods[0]);
 %>
 <c:if test="${empty user}">
     <p>您还没登录</p>
     <!-- 显示管理员相关页面 -->
-    <%-- 用于显示所有商品的表格 --%>
 
-    <table class="table table-bordered table-striped">
+    <%-- 用于显示所有商品的表格 --%>
+    <h2>商品列表</h2>
+    <table class="table table-bordered table-striped" border="1">
         <thead>
         <tr>
             <th>商品 ID</th>
@@ -117,6 +119,42 @@
         </c:forEach>
         </tbody>
     </table>
+
+    <h2>合同列表</h2>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Customer ID</th>
+            <th>Salesperson ID</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Purchase List ID</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% for (Contract contract : contractList) { %>
+        <tr>
+            <td><%= contract.getId() %></td>
+            <td><%= contract.getCustomerId() %></td>
+            <td><%= contract.getSalespersonId() %></td>
+            <td><%= contract.getStartDate() %></td>
+            <td><%= contract.getEndDate() %></td>
+            <td><%= contract.getAmount() %></td>
+            <td><%= contract.getStatus() %></td>
+            <td><%= contract.getPurchaseListId() %></td>
+            <td>
+                <a href="edit_contract.jsp?id=<%= contract.getId() %>">Edit</a>
+                <a href="delete_contract.jsp?id=<%= contract.getId() %>">Delete</a>
+            </td>
+        </tr>
+        <% } %>
+        </tbody>
+    </table>
+
 <h2>录入合同</h2>
 
 <form action="./contract/submit" method="post">

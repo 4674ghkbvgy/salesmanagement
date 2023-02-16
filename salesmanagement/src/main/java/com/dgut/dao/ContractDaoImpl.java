@@ -3,13 +3,14 @@ package com.dgut.dao;
 import com.dgut.entity.Contract;
 import com.dgut.entity.PurchaseList;
 import com.dgut.entity.PurchaseListItem;
+import com.dgut.entity.User;
 import com.dgut.util.MyUtil;
 import org.mariadb.jdbc.Statement;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.math.BigDecimal;
+import java.sql.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.dgut.util.MyUtil.getConnection;
@@ -26,22 +27,10 @@ public class ContractDaoImpl implements ContractDao {
             // 启动事务
             connection.setAutoCommit(false);
             // 创建合同
-//            String sql1 = "insert into contract (customer_id, salesperson_id, start_date, end_date, amount, status) values (?,?,?,?,?,?)";
-//            pstmt1 = connection.prepareStatement(sql1, Statement.RETURN_GENERATED_KEYS);
-//            pstmt1.setInt(1, contract.getCustomerId());
-//            pstmt1.setInt(2, contract.getSalespersonId());
-//            pstmt1.setDate(3, new java.sql.Date(contract.getStartDate().getTime()));
-//            pstmt1.setDate(4, new java.sql.Date(contract.getEndDate().getTime()));
-//            pstmt1.setDouble(5, contract.getAmount());
-//            pstmt1.setString(6, contract.getStatus().toString());
-//            pstmt1.executeUpdate();
-//            rs = pstmt1.getGeneratedKeys();
-//            if (rs.next()) {
-//            int contractId = rs.getInt(1);
+
             // 创建采购清单
             String sql2 = "insert into purchase_list () values ()";
             pstmt2 = connection.prepareStatement(sql2, Statement.RETURN_GENERATED_KEYS);
-//            pstmt2.setInt(1, contractId);
             pstmt2.executeUpdate();
             rs = pstmt2.getGeneratedKeys();
             if (rs.next()) {
@@ -81,12 +70,71 @@ public class ContractDaoImpl implements ContractDao {
 
     @Override
     public List<Contract> findAll() {
-        return null;
+
+        List<Contract> contractList = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = getConnection();
+            String sql = "SELECT * FROM contract";
+            ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                int customerId = rs.getInt("customer_id");
+                int salespersonId = rs.getInt("salesperson_id");
+                Date startDate = rs.getDate("start_date");
+                Date endDate = rs.getDate("end_date");
+                Double amount = rs.getDouble("amount");
+                String status = rs.getString("status");
+                int purchaseListId = rs.getInt("purchase_list_id");
+
+                Contract contract = new Contract(id, customerId, salespersonId, purchaseListId, startDate, endDate, amount, status);
+
+                contractList.add(contract);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            MyUtil.close(conn, ps);
+            return contractList;
+        }
     }
 
     @Override
-    public Contract findById(int id) {
-        return null;
+    public List<Contract> findByUser(User user) {
+
+        List<Contract> contractList = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = getConnection();
+            String sql = "SELECT * FROM contract WHERE customer_id = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, user.getId());
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                int customerId = rs.getInt("customer_id");
+                int salespersonId = rs.getInt("salesperson_id");
+                Date startDate = rs.getDate("start_date");
+                Date endDate = rs.getDate("end_date");
+                Double amount = rs.getDouble("amount");
+                String status = rs.getString("status");
+                int purchaseListId = rs.getInt("purchase_list_id");
+
+                Contract contract = new Contract(id, customerId, salespersonId, purchaseListId, startDate, endDate, amount, status);
+
+                contractList.add(contract);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            MyUtil.close(conn, ps);
+            return contractList;
+        }
     }
 
     @Override

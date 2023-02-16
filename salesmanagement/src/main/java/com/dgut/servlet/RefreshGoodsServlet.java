@@ -1,7 +1,9 @@
 package com.dgut.servlet;
 
+import com.dgut.dao.ContractDaoImpl;
 import com.dgut.dao.GoodsDaoImpl;
 import com.dgut.dao.UserDao;
+import com.dgut.entity.Contract;
 import com.dgut.entity.Goods;
 import com.dgut.entity.User;
 
@@ -29,6 +31,10 @@ public class RefreshGoodsServlet extends HttpServlet {
         List<User> salespersonList = userDao.findAllSalesperson();  // 从数据库或其他地方获取销售员信息
         request.setAttribute("salespersonList", salespersonList);
 //        request.getRequestDispatcher("./index.jsp").forward(request, response);
+
+        ContractDaoImpl contractDaoImpl =new ContractDaoImpl();
+        List<Contract> contractList = contractDaoImpl.findAll();
+        request.setAttribute("contractList", contractList);
     }
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

@@ -12,6 +12,33 @@ body {
 body {
     background-image: url("../img/page.png");
     background-size: cover;
+    background-attachment: fixed;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin: 20px 0;
+    font-size: 1.2em;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgb(255, 255, 255);
+}
+
+th {
+    background-color: #1abc9c;
+    color: #00f7ff;
+    text-align: left;
+    padding: 12px;
+}
+
+td {
+    border-bottom: 1px solid #00f7ff;
+    color: #ffffff;
+    text-align: left;
+    padding: 12px;
+}
+
+tr:hover {
+    background-color: #6259d3;
 }
 a{
     color: #6600ff; /* 文字颜色 */
@@ -24,7 +51,25 @@ p{
     color: #0095ff; /* 文字颜色 */
     background-color: rgba(255, 255, 255, 0); /* 背景颜色 */
 }
-h1{
-    color: #0c6a99; /* 文字颜色 */
-    background-color: rgba(255, 255, 255, 0); /* 背景颜色 */
+
+h1 {
+    font-size: 3em;
+    text-align: center;
+    background: linear-gradient(to right, #30cfd0 0%, #330867 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
+
+h2 {
+    animation: blink 2s ease-in-out infinite;
+}
+
+@keyframes blink {
+    0% { color: #a100ff; }
+    50% { color: #1be681; }
+    100% { color: #dcf154; }
+}
+/*h2{*/
+/*    color: #00f7ff; !* 文字颜色 *!*/
+/*    background-color: rgba(255, 255, 255, 0); !* 背景颜色 *!*/
+/*}*/

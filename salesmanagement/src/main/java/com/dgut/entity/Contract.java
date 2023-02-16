@@ -1,5 +1,7 @@
 package com.dgut.entity;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Contract {
@@ -14,6 +16,25 @@ public class Contract {
     private Date endDate;
     private Double amount;
     private String status;
+
+    public Contract(Integer id, Integer customerId, Integer salespersonId, Integer purchaseListId, Date startDate, Date endDate, Double amount, String status) {
+        this.id = id;
+        this.customerId = customerId;
+        this.salespersonId = salespersonId;
+        this.purchaseListId = purchaseListId;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.amount = amount;
+        this.status = status;
+    }
+    public Contract() {
+
+    }
+
+    public Contract(int id, int customerId, int salespersonId, int purchaseListId, LocalDateTime startDate, LocalDateTime endDate, BigDecimal amount, String status) {
+
+    }
+
 
     public Integer getId() {
         return id;
