@@ -1,0 +1,30 @@
+html {
+    /*margin: 0px;*/
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    /*margin: 0px;*/
+    min-height: 100%;
+    width: 100%;
+}
+body {
+    background-image: url("../img/page.png");
+    background-size: cover;
+}
+a{
+    color: #6600ff; /* 文字颜色 */
+    text-decoration: none; /* 删除下划线 */
+    font-size: 20px; /* 字体大小 */
+    background-color: rgba(255, 255, 255, 0); /* 背景颜色 */
+    padding: 10px; /* 内边距 */
+}
+p{
+    color: #0095ff; /* 文字颜色 */
+    background-color: rgba(255, 255, 255, 0); /* 背景颜色 */
+}
+h1{
+    color: #0c6a99; /* 文字颜色 */
+    background-color: rgba(255, 255, 255, 0); /* 背景颜色 */
+}
