@@ -119,7 +119,7 @@
     </table>
 <h2>录入合同</h2>
 
-<form action="/contract/submit" method="post">
+<form action="./contract/submit" method="post">
     <!-- 客户信息 -->
     <div>
         <label for="customer_id">客户ID:</label>
@@ -173,8 +173,8 @@
             </td>
             <td>
                 <!-- 增加一个 checkbox，用来标识该商品是否被选中 -->
-                <input type="checkbox" class="goods-checkbox" data-index="<%= i %>" onclick="calcTotal()" />
-                <input type="number" class="goods-count" data-index="<%= i %>" value="0" min="0"  onchange="calcTotal()" />
+                <input type="checkbox" id="checkbox" name="selectedGoodsIndex"  class="goods-checkbox" value="<%= i %>" data-index="<%= i %>" onclick="calcTotal()" />
+                <input type="number" id="number" name="goodsCount" class="goods-count" data-index="<%= i %>" value="0" min="0"  onchange="calcTotal()" />
             </td>
             <td class="goods-total" data-index="<%= i %>"></td>
         </tr>
@@ -228,7 +228,7 @@
 <!-- 显示普通用户相关页面 -->
 <h2>录入合同</h2>
 
-<form action="/contract/submit" method="post">
+<form action="./contract/submit" method="post">
 
     <!-- 客户信息 -->
     <div>
@@ -305,7 +305,7 @@
     <div>
         <input type="submit" value="提交">
     </div>
-
+</form>
     <%-- 用于显示所有商品的表格 --%>
     <a href="./refresh">刷新</a>
     <table class="table table-bordered table-striped">

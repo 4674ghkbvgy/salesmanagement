@@ -26,38 +26,47 @@ public class ContractDaoImpl implements ContractDao {
             // 启动事务
             connection.setAutoCommit(false);
             // 创建合同
-            String sql1 = "insert into contract (customer_id, salesperson_id, start_date, end_date, amount, status) values (?,?,?,?,?,?)";
-            pstmt1 = connection.prepareStatement(sql1, Statement.RETURN_GENERATED_KEYS);
-            pstmt1.setInt(1, contract.getCustomerId());
-            pstmt1.setInt(2, contract.getSalespersonId());
-            pstmt1.setDate(3, new java.sql.Date(contract.getStartDate().getTime()));
-            pstmt1.setDate(4, new java.sql.Date(contract.getEndDate().getTime()));
-            pstmt1.setDouble(5, contract.getAmount());
-            pstmt1.setString(6, contract.getStatus().toString());
-            pstmt1.executeUpdate();
-            rs = pstmt1.getGeneratedKeys();
+//            String sql1 = "insert into contract (customer_id, salesperson_id, start_date, end_date, amount, status) values (?,?,?,?,?,?)";
+//            pstmt1 = connection.prepareStatement(sql1, Statement.RETURN_GENERATED_KEYS);
+//            pstmt1.setInt(1, contract.getCustomerId());
+//            pstmt1.setInt(2, contract.getSalespersonId());
+//            pstmt1.setDate(3, new java.sql.Date(contract.getStartDate().getTime()));
+//            pstmt1.setDate(4, new java.sql.Date(contract.getEndDate().getTime()));
+//            pstmt1.setDouble(5, contract.getAmount());
+//            pstmt1.setString(6, contract.getStatus().toString());
+//            pstmt1.executeUpdate();
+//            rs = pstmt1.getGeneratedKeys();
+//            if (rs.next()) {
+//            int contractId = rs.getInt(1);
+            // 创建采购清单
+            String sql2 = "insert into purchase_list () values ()";
+            pstmt2 = connection.prepareStatement(sql2, Statement.RETURN_GENERATED_KEYS);
+//            pstmt2.setInt(1, contractId);
+            pstmt2.executeUpdate();
+            rs = pstmt2.getGeneratedKeys();
             if (rs.next()) {
-                int contractId = rs.getInt(1);
-                // 创建采购清单
-                String sql2 = "insert into purchase_list (contract_id) values (?)";
-                pstmt2 = connection.prepareStatement(sql2, Statement.RETURN_GENERATED_KEYS);
-                pstmt2.setInt(1, contractId);
-                pstmt2.executeUpdate();
-                rs = pstmt2.getGeneratedKeys();
-                if (rs.next()) {
-                    int purchaseListId = rs.getInt(1);
-                    // 创建采购清单项目
-                    for (PurchaseListItem purchaseListItem : purchaseListItems) {
-                        String sql3 = "insert into purchase_list_item (purchase_list_id, goods_id, quantity) values (?,?,?)";
-                        pstmt2 = connection.prepareStatement(sql3);
-                        pstmt2.setInt(1, purchaseListId);
-                        pstmt2.setInt(2, purchaseListItem.getGoodsId());
-                        pstmt2.setInt(3, purchaseListItem.getQuantity());
-                        pstmt2.executeUpdate();
-                    }
+                int purchaseListId = rs.getInt(1);
+                // 创建采购清单项目
+                for (PurchaseListItem purchaseListItem : purchaseListItems) {
+                    String sql3 = "insert into purchase_list_item (purchase_list_id, goods_id, quantity) values (?,?,?)";
+                    pstmt2 = connection.prepareStatement(sql3);
+                    pstmt2.setInt(1, purchaseListId);
+                    pstmt2.setInt(2, purchaseListItem.getGoodsId());
+                    pstmt2.setInt(3, purchaseListItem.getQuantity());
+                    pstmt2.executeUpdate();
                 }
-                connection.commit();
+                String sql1 = "insert into contract (customer_id, salesperson_id, start_date, end_date, amount, status, purchase_list_id) values (?,?,?,?,?,?,?)";
+                pstmt1 = connection.prepareStatement(sql1, Statement.RETURN_GENERATED_KEYS);
+                pstmt1.setInt(1, contract.getCustomerId());
+                pstmt1.setInt(2, contract.getSalespersonId());
+                pstmt1.setDate(3, new java.sql.Date(contract.getStartDate().getTime()));
+                pstmt1.setDate(4, new java.sql.Date(contract.getEndDate().getTime()));
+                pstmt1.setDouble(5, contract.getAmount());
+                pstmt1.setString(6, contract.getStatus().toString());
+                pstmt1.setInt(7, purchaseListId);
+                pstmt1.executeUpdate();
             }
+            connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
 

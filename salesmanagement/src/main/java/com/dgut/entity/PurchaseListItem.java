@@ -5,6 +5,10 @@ public class PurchaseListItem {
     private Integer goodsId;
     private Integer quantity;
 
+
+
+    private Double subtotal;
+
     public PurchaseListItem() {}
 
     public Integer getPurchaseListId() {
@@ -34,6 +38,12 @@ public class PurchaseListItem {
     public void setGoods(Goods goods) {
     }
 
-    public void setSubtotal(double subtotal) {
+
+    public Double getSubtotal() {
+        return subtotal;
+    }
+
+    public void setSubtotal(Double subtotal) {
+        this.subtotal = subtotal;
     }
 }

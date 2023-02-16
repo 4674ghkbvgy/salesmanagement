@@ -13,6 +13,16 @@
 <!--        <url-pattern>/refresh</url-pattern>-->
 <!--    </servlet-mapping>-->
     <servlet>
+        <servlet-name>ContractSubmitServlet</servlet-name>
+        <servlet-class>com.dgut.servlet.ContractSubmitServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ContractSubmitServlet</servlet-name>
+        <url-pattern>/contract/submit</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
         <servlet-name>RefreshGoodsServlet</servlet-name>
         <servlet-class>com.dgut.servlet.RefreshGoodsServlet</servlet-class>
     </servlet>
