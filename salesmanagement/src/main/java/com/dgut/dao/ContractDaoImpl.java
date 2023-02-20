@@ -98,8 +98,7 @@ public class ContractDaoImpl implements ContractDao {
             e.printStackTrace();
         } finally {
             MyUtil.close(conn, ps);
-            return contractList;
-        }
+        }return contractList;
     }
 
     @Override
@@ -133,8 +132,8 @@ public class ContractDaoImpl implements ContractDao {
             e.printStackTrace();
         } finally {
             MyUtil.close(conn, ps);
-            return contractList;
         }
+        return contractList;
     }
 
     @Override

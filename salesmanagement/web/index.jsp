@@ -15,7 +15,8 @@
     <title>Index Page</title>
 
     <script type="text/javascript">
-        // 计算总价
+
+    // 计算总价
         <%--function calcTotal() {--%>
         <%--    let total = 0;--%>
         <%--    let goodsCheckboxes = document.querySelectorAll(".goods-checkbox");--%>
@@ -69,6 +70,58 @@
 
 </head>
 <body >
+<%
+    User user = (User) session.getAttribute("user");
+    List<Goods> goodsList = (List<Goods>) request.getAttribute("goodsList");
+    List<User> salespersonList= (List<User>) request.getAttribute("salespersonList");
+    List<Contract> contractList =(List<Contract>) request.getAttribute("contractList");
+
+
+//    Goods[] goodsArray = goodsList.toArray(new Goods[0]);
+%>
+<script type="text/javascript">
+    function submitOrder() {
+        // 获取选中的商品数量和价格
+        var totalQuantity = 0;
+        var totalPrice = 0;
+        <% for (int i = 0; i < goodsList.size(); i++) { %>
+        var quantity_<%= i %> = parseInt(document.getElementById("quantity_<%= i %>").value);
+        var price_<%= i %> = <%= goodsList.get(i).getPrice() %>;
+        totalQuantity += quantity_<%= i %>;
+        totalPrice += quantity_<%= i %> * price_<%= i %>;
+        <% } %>
+        // 构造表单并提交
+        var form = document.createElement("form");
+        form.action = "/process-payment"; // set the URL to submit the form
+        form.method = "POST"; // set the HTTP method for the form
+
+// create a hidden input element for the contract ID
+        var input1 = document.createElement("input");
+        input1.type = "hidden";
+        input1.name = "contractId";
+        input1.value = "123"; // replace with the actual contract ID
+        form.appendChild(input1);
+
+// create a checkbox element for each selected item
+        var selectedItems = [1, 3, 5]; // replace with an array of selected item IDs
+        for (var i = 0; i < selectedItems.length; i++) {
+            var input2 = document.createElement("input");
+            input2.type = "checkbox";
+            input2.name = "selectedItems";
+            input2.value = selectedItems[i];
+            form.appendChild(input2);
+        }
+
+// create a button to submit the form
+        var submitButton = document.createElement("button");
+        submitButton.type = "submit";
+        submitButton.textContent = "Pay Now";
+        form.appendChild(submitButton);
+
+// add the form to the document
+        document.body.appendChild(form);
+    }
+</script>
 <%--style=" background: url(img/page.png);background-size: cover;"--%>
 <p> </p>
 <h1>公司销售管理系统</h1>
@@ -76,16 +129,7 @@
 <p> </p>
 <a href="login.jsp">登录页面</a> <a href="regist.jsp">注册页面</a>
 <p> </p>
-<%
-    User user = (User) session.getAttribute("user");
-%>
-<%
-    List<Goods> goodsList = (List<Goods>) request.getAttribute("goodsList");
-    List<User> salespersonList= (List<User>) request.getAttribute("salespersonList");
-    List<Contract> contractList =(List<Contract>) request.getAttribute("contractList");
 
-//    Goods[] goodsArray = goodsList.toArray(new Goods[0]);
-%>
 <c:if test="${empty user}">
     <p>您还没登录</p>
     <!-- 显示管理员相关页面 -->
@@ -155,17 +199,64 @@
         </tbody>
     </table>
 
+<div class="container">
+    <h2>合同详情</h2>
+    <p>合同编号：xxxx</p>
+    <p>合同名称：xxxx</p>
+    <p>合同金额：xxxx元</p>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">选择购物清单</button>
+</div>
+
+<!-- 购物清单模态框 -->
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">可选购物清单</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th>商品名称</th>
+                        <th>商品单价</th>
+                        <th>数量</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% for (int i = 0; i < goodsList.size(); i++) { %>
+                    <tr>
+                        <td><%= goodsList.get(i).getName() %></td>
+                        <td><%= goodsList.get(i).getPrice() %></td>
+                        <td>
+                            <input type="number" class="form-control" id="quantity_<%= i %>" name="quantity_<%= i %>" value="0" min="0" max="<%= goodsList.get(i).getStock() %>" />
+                        </td>
+                    </tr>
+                    <% } %>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="submitOrder()">付款</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <h2>录入合同</h2>
 
 <form action="./contract/submit" method="post">
     <!-- 客户信息 -->
     <div>
         <label for="customer_id">客户ID:</label>
-        <input type="text" id="customer_id" name="customer_id">
+        <input type="text" id="customer_id_" name="customer_id">
     </div>
     <div>
         <label for="salesperson_id">销售员ID:</label>
-        <select id="salesperson_id" name="salesperson_id">
+        <select id="salesperson_id_" name="salesperson_id">
             <!-- 销售员选项列表 -->
             <!-- 从后端获取，遍历显示 -->
             <c:forEach var="salesperson" items="${salespersonList}">
@@ -211,8 +302,8 @@
             </td>
             <td>
                 <!-- 增加一个 checkbox，用来标识该商品是否被选中 -->
-                <input type="checkbox" id="checkbox" name="selectedGoodsIndex"  class="goods-checkbox" value="<%= i %>" data-index="<%= i %>" onclick="calcTotal()" />
-                <input type="number" id="number" name="goodsCount" class="goods-count" data-index="<%= i %>" value="0" min="0"  onchange="calcTotal()" />
+                <input type="checkbox" id="checkbox_" name="selectedGoodsIndex"  class="goods-checkbox" value="<%= i %>" data-index="<%= i %>" onclick="calcTotal()" />
+                <input type="number" id="number_" name="goodsCount" class="goods-count" data-index="<%= i %>" value="0" min="0"  onchange="calcTotal()" />
             </td>
             <td class="goods-total" data-index="<%= i %>"></td>
         </tr>
@@ -232,7 +323,8 @@
 </c:if>
 
 <c:if test="${!empty user}">
-    <p>欢迎登录： ${sessionScope.user.name}</p>
+
+    <p>${sessionScope.user.name}，欢迎回来！ </p>
 <%--    <a href="/logout" >注销</a>--%>
     <button id="logout-button">注销登录</button>
     <script>
@@ -263,87 +355,123 @@
 </c:if>
 <c:if test="${sessionScope.user.type eq 0}">
 <p>您是普通用户</p>
+    <%
+        List<Contract> contractUserList =(List<Contract>) session.getAttribute("contractUserList");
+    %>
 <!-- 显示普通用户相关页面 -->
-<h2>录入合同</h2>
 
-<form action="./contract/submit" method="post">
 
-    <!-- 客户信息 -->
-    <div>
-        <label for="customer_id">客户ID:</label>
-        <input type="text" id="customer_id_" name="customer_id" value="${salesperson.id}">
-
-    </div>
-    <div>
-        <label for="salesperson_id">销售员ID:</label>
-
-        <select id="_salesperson_id" name="salesperson_id">
-            <!-- 销售员选项列表 -->
-            <!-- 从后端获取，遍历显示 -->
-            <c:forEach var="salesperson" items="${salespersonList}">
-                <option value="${salesperson.id}">${salesperson.name}</option>
-            </c:forEach>
-        </select>
-    </div>
-    <div>
-        <label for="start_date">开始日期:</label>
-        <input type="date" id="start_date" name="start_date">
-    </div>
-    <div>
-        <label for="end_date">结束日期:</label>
-        <input type="date" id="end_date" name="end_date">
-    </div>
-    <div>
-        <label for="status">状态:</label>
-        <select id="status" name="status">
-            <option value="Signed">Signed</option>
-            <option value="InProgress">InProgress</option>
-            <option value="Completed">Completed</option>
-        </select>
-    </div>
-    <!-- 商品信息 -->
-    <table id="goods-table">
+    <h2>您签订的合同列表</h2>
+    <table border="1">
         <thead>
         <tr>
-            <th>商品名称</th>
-            <th>商品价格</th>
-            <th>选择数量</th>
-            <th>小计</th>
+            <th>ID</th>
+            <th>Customer ID</th>
+            <th>Salesperson ID</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Purchase List ID</th>
+            <th>Action</th>
         </tr>
         </thead>
         <tbody>
-        <!-- 循环遍历 goodsList，生成商品行 -->
-        <% for (int i = 0; i < goodsList.size(); i++) { %>
-        <tr>
-            <td>
-                <%= goodsList.get(i).getName() %>
-            </td>
-            <td>
-                <%= goodsList.get(i).getPrice() %>
-            </td>
-            <td>
-                <!-- 增加一个 checkbox，用来标识该商品是否被选中 -->
-                <input type="checkbox" class="goods-checkbox" data-index="<%= i %>" onclick="calcTotal()" />
-                <input type="number" class="goods-count" data-index="<%= i %>" value="0" min="0"  onchange="calcTotal()" />
-            </td>
-            <td class="goods-total" data-index="<%= i %>"></td>
-        </tr>
-        <% } %>
+        <c:if test="${not empty contractUserList}">
+            <% for (Contract contract : contractUserList) { %>
+            <tr>
+                <td><%= contract.getId() %></td>
+                <td><%= contract.getCustomerId() %></td>
+                <td><%= contract.getSalespersonId() %></td>
+                <td><%= contract.getStartDate() %></td>
+                <td><%= contract.getEndDate() %></td>
+                <td><%= contract.getAmount() %></td>
+                <td><%= contract.getStatus() %></td>
+                <td><%= contract.getPurchaseListId() %></td>
+                <td>
+                    <a href="edit_contract.jsp?id=<%= contract.getId() %>">Edit</a>
+                    <a href="delete_contract.jsp?id=<%= contract.getId() %>">Delete</a>
+                </td>
+            </tr>
+            <% } %>
+        </c:if>
         </tbody>
     </table>
 
+    <h2>录入合同</h2>
 
-    <!-- 显示合同总价 -->
-    <div>
-        合同总价：<span id="total">0</span>
-    </div>
+    <form action="./contract/submit" method="post">
+        <!-- 客户信息 -->
+        <div>
+            <label for="customer_id">客户ID:</label>
+            <input type="text" id="customer_id" name="customer_id" value="${sessionScope.user.id}">
+        </div>
+        <div>
+            <label for="salesperson_id">销售员ID:</label>
+            <select id="salesperson_id" name="salesperson_id">
+                <!-- 销售员选项列表 -->
+                <!-- 从后端获取，遍历显示 -->
+                <c:forEach var="salesperson" items="${salespersonList}">
+                    <option value="${salesperson.id}">${salesperson.name}</option>
+                </c:forEach>
+            </select>
+        </div>
+        <div>
+            <label for="start_date">开始日期:</label>
+            <input type="date" id="start_date" name="start_date">
+        </div>
+        <div>
+            <label for="end_date">结束日期:</label>
+            <input type="date" id="end_date" name="end_date">
+        </div>
+        <div>
+            <label for="status">状态:</label>
+            <select id="status" name="status">
+                <option value="Signed">Signed</option>
+                <option value="InProgress">InProgress</option>
+                <option value="Completed">Completed</option>
+            </select>
+        </div>
+        <!-- 商品信息 -->
+        <table id="goods-table">
+            <thead>
+            <tr>
+                <th>商品名称</th>
+                <th>商品价格</th>
+                <th>选择数量</th>
+                <th>小计</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 循环遍历 goodsList，生成商品行 -->
+            <% for (int i = 0; i < goodsList.size(); i++) { %>
+            <tr>
+                <td>
+                    <%= goodsList.get(i).getName() %>
+                </td>
+                <td>
+                    <%= goodsList.get(i).getPrice() %>
+                </td>
+                <td>
+                    <!-- 增加一个 checkbox，用来标识该商品是否被选中 -->
+                    <input type="checkbox" id="checkbox" name="selectedGoodsIndex"  class="goods-checkbox" value="<%= i %>" data-index="<%= i %>" onclick="calcTotal()" />
+                    <input type="number" id="number" name="goodsCount" class="goods-count" data-index="<%= i %>" value="0" min="0"  onchange="calcTotal()" />
+                </td>
+                <td class="goods-total" data-index="<%= i %>"></td>
+            </tr>
+            <% } %>
+            </tbody>
+        </table>
+        <!-- 显示合同总价 -->
+        <div>
+            合同总价：<span id="total">0</span>
+        </div>
+        <!-- 提交按钮 -->
+        <div>
+            <input type="submit" value="提交">
+        </div>
+    </form>
 
-
-    <!-- 提交按钮 -->
-    <div>
-        <input type="submit" value="提交">
-    </div>
-</form>
     <%-- 用于显示所有商品的表格 --%>
     <a href="./refresh">刷新</a>
     <table class="table table-bordered table-striped">
@@ -383,7 +511,7 @@
         </div>
             <%-- 用于创建新商品的表单 --%>
 
-        <form action="createGoods.jsp" method="post">
+        <form  accept-charset="UTF-8"  action="createGoods.jsp" method="post">
             <div class="form-group">
                 <label for="name">商品名称</label>
                 <input type="text" class="form-control" id="name" name="name" required>

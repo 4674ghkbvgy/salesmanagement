@@ -35,6 +35,8 @@ public class RefreshGoodsServlet extends HttpServlet {
         ContractDaoImpl contractDaoImpl =new ContractDaoImpl();
         List<Contract> contractList = contractDaoImpl.findAll();
         request.setAttribute("contractList", contractList);
+
+
     }
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

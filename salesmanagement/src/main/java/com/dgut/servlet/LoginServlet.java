@@ -1,6 +1,8 @@
 package com.dgut.servlet;
 
+import com.dgut.dao.ContractDaoImpl;
 import com.dgut.dao.UserDao;
+import com.dgut.entity.Contract;
 import com.dgut.entity.User;
 
 import javax.servlet.ServletException;
@@ -10,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
 @WebServlet(name = "user", urlPatterns = "/user")
@@ -39,6 +42,11 @@ public class LoginServlet extends HttpServlet {
                     session.setAttribute("user", user);
                 }
                 req.getSession().setAttribute("user", user);
+
+                ContractDaoImpl contractDaoImpl =new ContractDaoImpl();
+                List<Contract> contractList = contractDaoImpl.findByUser(user);
+                req.getSession().setAttribute("contractUserList", contractList);
+
                 resp.sendRedirect("index.jsp");
             } else {
                 //账号密码不匹配，返回登录页面
