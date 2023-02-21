@@ -13,6 +13,44 @@
 <!--        <url-pattern>/refresh</url-pattern>-->
 <!--    </servlet-mapping>-->
     <servlet>
+        <servlet-name>IncreaseStockServlet</servlet-name>
+        <servlet-class>com.dgut.servlet.IncreaseStockServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>IncreaseStockServlet</servlet-name>
+        <url-pattern>/IncreaseStockServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>createOrder</servlet-name>
+        <servlet-class>com.dgut.servlet.CreatePurchaseOrderServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>createOrder</servlet-name>
+        <url-pattern>/createOrder</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Payment</servlet-name>
+        <servlet-class>com.dgut.servlet.PaymentServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Payment</servlet-name>
+        <url-pattern>/payment</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>ContractsServlet</servlet-name>
+        <servlet-class>com.dgut.servlet.ContractsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ContractsServlet</servlet-name>
+        <url-pattern>/api/contracts/*</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
         <servlet-name>ContractSubmitServlet</servlet-name>
         <servlet-class>com.dgut.servlet.ContractSubmitServlet</servlet-class>
     </servlet>

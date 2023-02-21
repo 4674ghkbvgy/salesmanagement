@@ -150,4 +150,37 @@ public class ContractDaoImpl implements ContractDao {
     public int deleteById(int id) {
         return 0;
     }
+
+
+    public Contract getContractById(int contractId) {
+        List<Contract> contractList = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement ps = null;
+        Contract contract = null;
+        try {
+            conn = getConnection();
+            String sql = "SELECT * FROM contract WHERE id=?";
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, contractId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                int customerId = rs.getInt("customer_id");
+                int salespersonId = rs.getInt("salesperson_id");
+                Date startDate = rs.getDate("start_date");
+                Date endDate = rs.getDate("end_date");
+                Double amount = rs.getDouble("amount");
+                String status = rs.getString("status");
+                int purchaseListId = rs.getInt("purchase_list_id");
+
+                contract = new Contract(id, customerId, salespersonId, purchaseListId, startDate, endDate, amount, status);
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            MyUtil.close(conn, ps);
+        }return contract;
+    }
 }

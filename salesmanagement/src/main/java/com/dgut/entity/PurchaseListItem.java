@@ -11,6 +11,12 @@ public class PurchaseListItem {
 
     public PurchaseListItem() {}
 
+    public PurchaseListItem(Integer purchaseListId, Integer goodsId, Integer quantity) {
+        this.purchaseListId = purchaseListId;
+        this.goodsId = goodsId;
+        this.quantity = quantity;
+    }
+
     public Integer getPurchaseListId() {
         return purchaseListId;
     }

@@ -20,9 +20,13 @@ public class JspFilter implements Filter {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         ServletContext servletContext = request.getServletContext();
+
         RequestDispatcher requestDispatcher = servletContext.getRequestDispatcher("/refresh");
         requestDispatcher.include(request, response);
 
+
+//       RequestDispatcher requestDispatcher2 = servletContext.getRequestDispatcher("/api/contracts/1");
+//        requestDispatcher2.include(request, response);
 
         // 执行下一个过滤器或目标资源
         chain.doFilter(request, response);

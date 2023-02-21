@@ -104,7 +104,24 @@ public class StockDaoImpl implements StockDao {
             }
         }
     }
-
+    public Stock findStockByPId(int id) throws SQLException {
+        String sql = "SELECT * FROM stock WHERE product_id=?";
+        try (Connection conn = MyUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Stock(
+                            rs.getInt("id"),
+                            rs.getInt("product_id"),
+                            rs.getInt("quantity")
+                    );
+                } else {
+                    return null;
+                }
+            }
+        }
+    }
     public List<Stock> findAllStock() throws SQLException {
         String sql = "SELECT * FROM stock";
         try (Connection conn = MyUtil.getConnection();

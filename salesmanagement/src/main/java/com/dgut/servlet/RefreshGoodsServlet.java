@@ -1,15 +1,14 @@
 package com.dgut.servlet;
 
-import com.dgut.dao.ContractDaoImpl;
-import com.dgut.dao.GoodsDaoImpl;
-import com.dgut.dao.UserDao;
-import com.dgut.entity.Contract;
-import com.dgut.entity.Goods;
-import com.dgut.entity.User;
+import com.dgut.dao.*;
+import com.dgut.entity.*;
 
 import java.io.IOException;
 import java.io.Serial;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -37,6 +36,39 @@ public class RefreshGoodsServlet extends HttpServlet {
         request.setAttribute("contractList", contractList);
 
 
+//        ContractDaoImpl contractDao = new ContractDaoImpl();
+//        PurchaseListDao purchaseListItemDao = new PurchaseListDao();
+
+        PurchaseOrderDao purchaseOrderDao=new PurchaseOrderDao();
+        try {
+            List<PurchaseOrder> PurchaseOrderList =purchaseOrderDao.findAll();
+            request.setAttribute("PurchaseOrderList", PurchaseOrderList);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
+//        Contract contract = contractDao.getContractById(1);
+//
+//        if (contract == null) {
+//            response.setStatus(404);
+//            response.getWriter().println("Contract not found");
+//            return;
+//        }
+//
+//        List<PurchaseListItem> purchaseListItems = null;
+//        try {
+//            purchaseListItems = purchaseListItemDao.getPurchaseListItemsByPurchaseListId(contract.getPurchaseListId());
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//        Map<Integer, Integer> goodsMap = new HashMap<>();
+//
+//        for (PurchaseListItem item : purchaseListItems) {
+//            goodsMap.put(item.getGoodsId(), item.getQuantity());
+//        }
+//
+//        request.setAttribute("goodsMap", goodsMap);
     }
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

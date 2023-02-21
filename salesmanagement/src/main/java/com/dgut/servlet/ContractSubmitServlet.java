@@ -67,7 +67,6 @@ public class ContractSubmitServlet extends HttpServlet {
                 purchaseListItem.setGoodsId(goods.getId());
                 purchaseListItem.setQuantity(quantity);
                 purchaseListItem.setSubtotal(subtotal);
-
                 purchaseListItems.add(purchaseListItem);
             }
 
