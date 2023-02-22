@@ -90,47 +90,43 @@
 %>
 <script type="text/javascript">
 
-    function submitOrder() {
-        // 获取选中的商品数量和价格
-        var totalQuantity = 0;
-        var totalPrice = 0;
-        <% for (int i = 0; i < goodsList.size(); i++) { %>
-        var quantity_<%= i %> = parseInt(document.getElementById("quantity_<%= i %>").value);
-        var price_<%= i %> = <%= goodsList.get(i).getPrice() %>;
-        totalQuantity += quantity_<%= i %>;
-        totalPrice += quantity_<%= i %> * price_<%= i %>;
-        <% } %>
-        // 构造表单并提交
-        var form = document.createElement("form");
-        form.action = "/process-payment"; // set the URL to submit the form
-        form.method = "POST"; // set the HTTP method for the form
+<%--    function submitOrder() {--%>
+<%--        // 获取选中的商品数量和价格--%>
+<%--        var totalQuantity = 0;--%>
+<%--        var totalPrice = 0;--%>
+<%--        <% for (int i = 0; i < goodsList.size(); i++) { %>--%>
+<%--        var quantity_<%= i %> = parseInt(document.getElementById("quantity_<%= i %>").value);--%>
+<%--        var price_<%= i %> = <%= goodsList.get(i).getPrice() %>;--%>
+<%--        totalQuantity += quantity_<%= i %>;--%>
+<%--        totalPrice += quantity_<%= i %> * price_<%= i %>;--%>
+<%--        <% } %>--%>
+<%--        // 构造表单并提交--%>
+<%--        var form = document.createElement("form");--%>
+<%--        form.action = "/process-payment"; // set the URL--%>
+<%--        form.method = "POST"; // set the HTTP method--%>
 
-// create a hidden input element for the contract ID
-        var input1 = document.createElement("input");
-        input1.type = "hidden";
-        input1.name = "contractId";
-        input1.value = "123"; // replace with the actual contract ID
-        form.appendChild(input1);
+<%--        var input1 = document.createElement("input");--%>
+<%--        input1.type = "hidden";--%>
+<%--        input1.name = "contractId";--%>
+<%--        input1.value = "123"; // replace with the actual contract ID--%>
+<%--        form.appendChild(input1);--%>
 
-// create a checkbox element for each selected item
-        var selectedItems = [1, 3, 5]; // replace with an array of selected item IDs
-        for (var i = 0; i < selectedItems.length; i++) {
-            var input2 = document.createElement("input");
-            input2.type = "checkbox";
-            input2.name = "selectedItems";
-            input2.value = selectedItems[i];
-            form.appendChild(input2);
-        }
+<%--        var selectedItems = [1, 3, 5]; // replace with an array of selected item IDs--%>
+<%--        for (var i = 0; i < selectedItems.length; i++) {--%>
+<%--            var input2 = document.createElement("input");--%>
+<%--            input2.type = "checkbox";--%>
+<%--            input2.name = "selectedItems";--%>
+<%--            input2.value = selectedItems[i];--%>
+<%--            form.appendChild(input2);--%>
+<%--        }--%>
 
-// create a button to submit the form
-        var submitButton = document.createElement("button");
-        submitButton.type = "submit";
-        submitButton.textContent = "Pay Now";
-        form.appendChild(submitButton);
+<%--        var submitButton = document.createElement("button");--%>
+<%--        submitButton.type = "submit";--%>
+<%--        submitButton.textContent = "Pay Now";--%>
+<%--        form.appendChild(submitButton);--%>
 
-// add the form to the document
-        document.body.appendChild(form);
-    }
+<%--        document.body.appendChild(form);--%>
+<%--    }--%>
 </script>
 
 <script>
@@ -139,7 +135,7 @@
         var data = JSON.parse(jsonData); // 将JSON字符串转换为JavaScript对象
 
         // 获取表格并清空
-        var table = document.getElementById("myTable");
+        var table = document.getElementById("myTable1");
         table.innerHTML = "";
 
         // 在表格中添加表头
@@ -158,6 +154,57 @@
             cell1.innerHTML = data[i].name;
             cell2.innerHTML = data[i].sales;
         }
+    // });
+    // $(document).ready(function () {
+
+        var jsonData2 = '${SalesByGoods}'; // 获取JSON数据
+        var data2 = JSON.parse(jsonData2); // 将JSON字符串转换为JavaScript对象
+
+        // 获取表格并清空
+        var table = document.getElementById("myTable2");
+        table.innerHTML = "";
+        // 在表格中添加表头
+        var header = table.createTHead();
+        var row = header.insertRow(0);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        cell1.innerHTML = "<b>Goods Name</b>";
+        cell2.innerHTML = "<b>Sales Amount</b>";
+
+        // 将数据插入到表格中
+        for (var i = 0; i < data2.length; i++) {
+            var row = table.insertRow(i + 1);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            cell1.innerHTML = data2[i].name;
+            cell2.innerHTML = data2[i].sales;
+        }
+    });
+    $(document).ready(function () {
+        var jsonData = '${Unpaid}'; // 获取JSON数据
+        var data = JSON.parse(jsonData); // 将JSON字符串转换为JavaScript对象
+
+        // 获取表格并清空
+        var table = document.getElementById("unpaidTable");
+        table.innerHTML = "";
+
+        // 在表格中添加表头
+        var header = table.createTHead();
+        var row = header.insertRow(0);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        cell1.innerHTML = "<b>商品id</b>";
+        cell2.innerHTML = "<b>待支付数量</b>";
+
+        // 将数据插入到表格中
+        for (var i = 0; i < data.length; i++) {
+            var row = table.insertRow(i + 1);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            cell1.innerHTML = data[i].id;
+            cell2.innerHTML = data[i].stock;
+        }
+
     });
 </script>
 
@@ -166,10 +213,8 @@
 <p></p>
 <h1>公司销售管理系统</h1>
 
-<body>
-<table id="myTable">
-</table>
-</body>
+
+
 <p></p>
 <a href="login.jsp">登录页面</a> <a href="regist.jsp">注册页面</a>
 <p></p>
@@ -179,26 +224,6 @@
     <!-- 显示管理员相关页面 -->
 
     <%-- 用于显示所有商品的表格 --%>
-    <h2>Sales by Customer</h2>
-    <table>
-        <tr>
-            <th>Customer Name</th>
-            <th>Total Sales</th>
-        </tr>
-<%--        <c:forEach var="data" items="${jsonData}">--%>
-<%--            <tr>--%>
-<%--                <td>${data.getAsJsonArray().get("name").getAsString()}</td>--%>
-<%--                <td>${data.getAsJsonArray().get("sales").getAsString()}</td>--%>
-<%--            </tr>--%>
-<%--        </c:forEach>--%>
-<%--        <c:forEach var="data" items="${SalesByCustomer}">--%>
-<%--            <tr>--%>
-<%--                <td>${data.name}</td>--%>
-<%--                <td>${data.sales}</td>--%>
-<%--            </tr>--%>
-<%--        </c:forEach>--%>
-
-    </table>
 
 
     <h2>商品列表</h2>
@@ -274,81 +299,81 @@
     </table>
 
 
-    <h2>录入合同</h2>
+<%--    <h2>录入合同</h2>--%>
 
-    <form action="./contract/submit" method="post">
-        <!-- 客户信息 -->
-        <div>
-            <label for="customer_id">客户ID:</label>
-            <input type="text" id="customer_id_" name="customer_id">
-        </div>
-        <div>
-            <label for="salesperson_id">销售员ID:</label>
-            <select id="salesperson_id_" name="salesperson_id">
-                <!-- 销售员选项列表 -->
-                <!-- 从后端获取，遍历显示 -->
-                <c:forEach var="salesperson" items="${salespersonList}">
-                    <option value="${salesperson.id}">${salesperson.name}</option>
-                </c:forEach>
-            </select>
-        </div>
-        <div>
-            <label for="start_date">开始日期:</label>
-            <input type="date" id="start_date_" name="start_date">
-        </div>
-        <div>
-            <label for="end_date">结束日期:</label>
-            <input type="date" id="end_date_" name="end_date">
-        </div>
-        <div>
-            <label for="status">状态:</label>
-            <select id="status_" name="status">
-                <option value="Signed">Signed</option>
-                <option value="InProgress">InProgress</option>
-                <option value="Completed">Completed</option>
-            </select>
-        </div>
-        <!-- 商品信息 -->
-        <table id="goods-table_">
-            <thead>
-            <tr>
-                <th>商品名称</th>
-                <th>商品价格</th>
-                <th>选择数量</th>
-                <th>小计</th>
-            </tr>
-            </thead>
-            <tbody>
-            <!-- 循环遍历 goodsList，生成商品行 -->
-            <% for (int i = 0; i < goodsList.size(); i++) { %>
-            <tr>
-                <td>
-                    <%= goodsList.get(i).getName() %>
-                </td>
-                <td>
-                    <%= goodsList.get(i).getPrice() %>
-                </td>
-                <td>
-                    <!-- 增加一个 checkbox，用来标识该商品是否被选中 -->
-                    <input type="checkbox" id="checkbox_" name="selectedGoodsIndex" class="goods-checkbox"
-                           value="<%= i %>" data-index="<%= i %>" onclick="calcTotal()"/>
-                    <input type="number" id="number_" name="goodsCount" class="goods-count" data-index="<%= i %>"
-                           value="0" min="0" onchange="calcTotal()"/>
-                </td>
-                <td class="goods-total" data-index="<%= i %>"></td>
-            </tr>
-            <% } %>
-            </tbody>
-        </table>
-        <!-- 显示合同总价 -->
-        <div>
-            合同总价：<span id="total_">0</span>
-        </div>
-        <!-- 提交按钮 -->
-        <div>
-            <input type="submit" value="提交">
-        </div>
-    </form>
+<%--    <form action="./contract/submit" method="post">--%>
+<%--        <!-- 客户信息 -->--%>
+<%--        <div>--%>
+<%--            <label for="customer_id">客户ID:</label>--%>
+<%--            <input type="text" id="customer_id_" name="customer_id">--%>
+<%--        </div>--%>
+<%--        <div>--%>
+<%--            <label for="salesperson_id">销售员ID:</label>--%>
+<%--            <select id="salesperson_id_" name="salesperson_id">--%>
+<%--                <!-- 销售员选项列表 -->--%>
+<%--                <!-- 从后端获取，遍历显示 -->--%>
+<%--                <c:forEach var="salesperson" items="${salespersonList}">--%>
+<%--                    <option value="${salesperson.id}">${salesperson.name}</option>--%>
+<%--                </c:forEach>--%>
+<%--            </select>--%>
+<%--        </div>--%>
+<%--        <div>--%>
+<%--            <label for="start_date">开始日期:</label>--%>
+<%--            <input type="date" id="start_date_" name="start_date">--%>
+<%--        </div>--%>
+<%--        <div>--%>
+<%--            <label for="end_date">结束日期:</label>--%>
+<%--            <input type="date" id="end_date_" name="end_date">--%>
+<%--        </div>--%>
+<%--        <div>--%>
+<%--            <label for="status">状态:</label>--%>
+<%--            <select id="status_" name="status">--%>
+<%--                <option value="Signed">Signed</option>--%>
+<%--                <option value="InProgress">InProgress</option>--%>
+<%--                <option value="Completed">Completed</option>--%>
+<%--            </select>--%>
+<%--        </div>--%>
+<%--        <!-- 商品信息 -->--%>
+<%--        <table id="goods-table_">--%>
+<%--            <thead>--%>
+<%--            <tr>--%>
+<%--                <th>商品名称</th>--%>
+<%--                <th>商品价格</th>--%>
+<%--                <th>选择数量</th>--%>
+<%--                <th>小计</th>--%>
+<%--            </tr>--%>
+<%--            </thead>--%>
+<%--            <tbody>--%>
+<%--            <!-- 循环遍历 goodsList，生成商品行 -->--%>
+<%--            <% for (int i = 0; i < goodsList.size(); i++) { %>--%>
+<%--            <tr>--%>
+<%--                <td>--%>
+<%--                    <%= goodsList.get(i).getName() %>--%>
+<%--                </td>--%>
+<%--                <td>--%>
+<%--                    <%= goodsList.get(i).getPrice() %>--%>
+<%--                </td>--%>
+<%--                <td>--%>
+<%--                    <!-- 增加一个 checkbox，用来标识该商品是否被选中 -->--%>
+<%--                    <input type="checkbox" id="checkbox_" name="selectedGoodsIndex" class="goods-checkbox"--%>
+<%--                           value="<%= i %>" data-index="<%= i %>" onclick="calcTotal()"/>--%>
+<%--                    <input type="number" id="number_" name="goodsCount" class="goods-count" data-index="<%= i %>"--%>
+<%--                           value="0" min="0" onchange="calcTotal()"/>--%>
+<%--                </td>--%>
+<%--                <td class="goods-total" data-index="<%= i %>"></td>--%>
+<%--            </tr>--%>
+<%--            <% } %>--%>
+<%--            </tbody>--%>
+<%--        </table>--%>
+<%--        <!-- 显示合同总价 -->--%>
+<%--        <div>--%>
+<%--            合同总价：<span id="total_">0</span>--%>
+<%--        </div>--%>
+<%--        <!-- 提交按钮 -->--%>
+<%--        <div>--%>
+<%--            <input type="submit" value="提交">--%>
+<%--        </div>--%>
+<%--    </form>--%>
 
 </c:if>
 
@@ -367,9 +392,9 @@
                 method: "POST"
             }).then(function (response) {
                 // 如果请求成功，跳转到登录页面response.status === 200
-                if (1 == 1) {
+                // if () {
                     window.location.href = "./";
-                }
+                // }
             });
         });
     </script>
@@ -378,6 +403,16 @@
 <c:if test="${sessionScope.user.type eq 1}">
     <p>您是销售管理员用户</p>
     <!-- 显示管理员相关页面 -->
+
+    <h2>不同客户的销售额</h2>
+    <table id="myTable1">
+    </table>
+
+    <h2>不同商品的销售额</h2>
+    <table id="myTable2">
+    </table>
+
+
     <h2>User List</h2>
     <table border="1">
         <tr>
@@ -442,20 +477,22 @@
         <input type="submit" value="edit">
     </form>
 
-
-    <h2>Sales by Customer</h2>
-    <table>
-        <tr>
-            <th>Customer Name</th>
-            <th>Total Sales</th>
-        </tr>
-        <c:forEach var="row" items="${salesByCustomer}">
-            <tr>
-                <td>${row.name}</td>
-                <td>${row.sales}</td>
-            </tr>
-        </c:forEach>
-    </table>
+    <h2>添加新商品</h2>
+    <form accept-charset="UTF-8" action="createGoods.jsp" method="post">
+        <div class="form-group">
+            <label for="name">商品名称</label>
+            <input type="text" class="form-control" id="name1" name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="price">价格</label>
+            <input type=type="number" step="0.01"class="form-control" id="price1" name="price" required>
+        </div>
+        <div class="form-group">
+            <label for="description">描述</label>
+            <textarea class="form-control" id="description1" name="description"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">创建</button>
+    </form>
 
 </c:if>
 <c:if test="${sessionScope.user.type eq 2}">
@@ -497,27 +534,22 @@
         <input type="date" name="purchase_date" />
         <input type="submit" value="提交" />
     </form>
-
-
-
-    <%--    <table id="purchase-order-table">--%>
-<%--        <thead>--%>
-<%--        <tr>--%>
-<%--            <th>商品ID</th>--%>
-<%--            <th>进货数量</th>--%>
-<%--            <th>进货日期</th>--%>
-<%--        </tr>--%>
-<%--        </thead>--%>
-<%--        <tbody>--%>
-<%--        <% for (PurchaseOrder purchaseOrder : (List<PurchaseOrder>) request.getAttribute("PurchaseOrderList")) { %>--%>
-<%--        <tr>--%>
-<%--            <td><%= purchaseOrder.getId() %></td>--%>
-<%--            <td><%= purchaseOrder.getQuantity() %></td>--%>
-<%--            <td><%= purchaseOrder.getPurchaseDate() %></td>--%>
-<%--        </tr>--%>
-<%--        <% } %>--%>
-<%--        </tbody>--%>
-<%--    </table>--%>
+    <h2>添加新商品</h2>
+    <form accept-charset="UTF-8" action="createGoods.jsp" method="post">
+        <div class="form-group">
+            <label for="name">商品名称</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="price">价格</label>
+            <input type=type="number" step="0.01"class="form-control" id="price" name="price" required>
+        </div>
+        <div class="form-group">
+            <label for="description">描述</label>
+            <textarea class="form-control" id="description" name="description"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">创建</button>
+    </form>
 </c:if>
 <c:if test="${sessionScope.user.type eq 0}">
     <p>您是普通用户</p>
@@ -650,6 +682,7 @@
 
     <%-- 用于显示所有商品的表格 --%>
     <a href="./refresh">刷新</a>
+
     <table class="table table-bordered table-striped">
         <thead>
         <tr>
@@ -677,127 +710,108 @@
         </c:forEach>
         </tbody>
     </table>
-</c:if>
-<%-- 用于分页显示的分页栏 --%>
-
-<div class="pagination">
-    <c:forEach begin="1" end="${totalPages}" var="i">
-        <a href="index.jsp?page=${i}" class="${page == i ? 'active' : ''}">${i}</a>
-    </c:forEach>
-</div>
-<%-- 用于创建新商品的表单 --%>
-
-<form accept-charset="UTF-8" action="createGoods.jsp" method="post">
-    <div class="form-group">
-        <label for="name">商品名称</label>
-        <input type="text" class="form-control" id="name" name="name" required>
-    </div>
-    <div class="form-group">
-        <label for="price">价格</label>
-        <input type="number" class="form-control" id="price" name="price" required>
-    </div>
-    <div class="form-group">
-        <label for="description">描述</label>
-        <textarea class="form-control" id="description" name="description"></textarea>
-    </div>
-    <button type="submit" class="btn btn-primary">创建</button>
-</form>
-
-
-<%--        接下来是分页显示的部分：--%>
-<h2>合同的多次支付</h2>
-<div>
-    <%--    <select id="contractsSelect">--%>
-    <%--&lt;%&ndash;        <option value="-1">请选择合同</option>&ndash;%&gt;--%>
-    <%--        <% for (Contract contract : contractList) { %>--%>
-    <%--        <option value="<%= contract.getId() %>"><%= contract.getId() %></option>--%>
-    <%--        <!-- 在这里添加选项，值为合同id，显示为合同名称 -->--%>
-    <%--    </select>--%>
-
-    <select id="contractsSelect">
-        <option value="-1">请选择合同</option>
-        ;
-        <c:forEach items="${contractList}" var="contract">
-            <option value="${contract.id}">${contract.id}</option>
-        </c:forEach>
-    </select>
-    <button id="btn-show-contract-goods">显示商品清单</button>
-</div>
-<%
-    Map<Integer, Integer> goodsMap = (Map<Integer, Integer>) request.getAttribute("goodsMap");
-%>
 
 
 
-<form action="./payment" method="post">
+    <h2>合同的多次支付</h2>
+    <form action="./unpaid" method="get">
     <div>
-        <label for="payment_contract_id">客户ID:</label>
-        <select id="payment_contract_id" name="payment_contract_id">
+        <select id="contractsSelect" name="contractsSelect">
             <option value="-1">请选择合同</option>
             <c:forEach items="${contractList}" var="contract">
                 <option value="${contract.id}">${contract.id}</option>
             </c:forEach>
         </select>
+        <input type="submit" value="显示商品清单">
     </div>
-    <!-- 商品信息 -->
-    <table id="payment-table">
-        <thead>
-        <tr>
-            <th>商品名称</th>
-            <th>商品价格</th>
-            <th>选择数量</th>
-            <th>小计</th>
-        </tr>
-        </thead>
-        <tbody>
-        <!-- 循环遍历 goodsList，生成商品行 -->
-        <% for (int i = 0; i < goodsList.size(); i++) { %>
-        <tr>
-            <td>
-                <%= goodsList.get(i).getName() %>
-            </td>
-            <td>
-                <%= goodsList.get(i).getPrice() %>
-            </td>
-            <td>
-                <!-- 增加一个 checkbox，用来标识该商品是否被选中 -->
-                <input type="checkbox" id="payment_checkbox" name="selectedPaymentsIndex" class="goods-checkbox"
-                       value="<%= i %>" data-index="<%= i %>" onclick="calcTotal()"/>
-                <input type="number" id="payment_number" name="paymentsCount" class="goods-count" data-index="<%= i %>"
-                       value="0" min="0" onchange="calcTotal()"/>
-            </td>
-            <td class="goods-total" data-index="<%= i %>"></td>
-        </tr>
-        <% } %>
-        </tbody>
+    </form>
+
+    <h2>待支付的清单</h2>
+    <table id="unpaidTable">
     </table>
-    <!-- 提交按钮 -->
-    <div>
-        <input type="submit" value="提交">
-    </div>
-</form>
+
+
+    <%
+        Map<Integer, Integer> goodsMap = (Map<Integer, Integer>) request.getAttribute("goodsMap");
+    %>
+    <form action="./payment" method="post">
+        <div>
+            <label for="payment_contract_id">合同ID:</label>
+            <select id="payment_contract_id" name="payment_contract_id">
+                <option value="-1">请选择合同</option>
+                <c:forEach items="${contractList}" var="contract">
+                    <option value="${contract.id}">${contract.id}</option>
+                </c:forEach>
+            </select>
+        </div>
+        <!-- 商品信息 -->
+        <table id="payment-table">
+            <thead>
+            <tr>
+                <th>商品名称</th>
+                <th>商品价格</th>
+                <th>选择数量</th>
+                <th>小计</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 循环遍历 goodsList，生成商品行 -->
+            <% for (int i = 0; i < goodsList.size(); i++) { %>
+            <tr>
+                <td>
+                    <%= goodsList.get(i).getName() %>
+                </td>
+                <td>
+                    <%= goodsList.get(i).getPrice() %>
+                </td>
+                <td>
+                    <!-- 增加一个 checkbox，用来标识该商品是否被选中 -->
+                    <input type="checkbox" id="payment_checkbox" name="selectedPaymentsIndex" class="goods-checkbox"
+                           value="<%= i %>" data-index="<%= i %>" onclick="calcTotal()"/>
+                    <input type="number" id="payment_number" name="paymentsCount" class="goods-count" data-index="<%= i %>"
+                           value="0" min="0" onchange="calcTotal()"/>
+                </td>
+                <td class="goods-total" data-index="<%= i %>"></td>
+            </tr>
+            <% } %>
+            </tbody>
+        </table>
+        <!-- 提交按钮 -->
+        <div>
+            <input type="submit" value="提交">
+        </div>
+    </form>
+
+</c:if>
+
+<%-- 用于创建新商品的表单 --%>
 
 
 
-<table id="contract-goods">
-    <thead>
-<%--    <jsp:useBean id="goodsMap" scope="request" type="java.util.Map"/>--%>
-<%--    <jsp:useBean id="goodsId" scope="request" type="java.util.List"/>--%>
-    <tr>
-        <th>商品名称</th>
-        <th>数量</th>
-    </tr>
-    <c:forEach items="${goodsMap}" var="goodsId">
-        <tr>
-            <td>${goodsMap[goodsId].name}</td>
-            <td>${goodsMap[goodsId]}</td>
-        </tr>
-    </c:forEach>
 
-    </thead>
-    <tbody>
-    </tbody>
-</table>
+
+<%--<table id="contract-goods">--%>
+<%--    <thead>--%>
+<%--&lt;%&ndash;    <jsp:useBean id="goodsMap" scope="request" type="java.util.Map"/>&ndash;%&gt;--%>
+<%--&lt;%&ndash;    <jsp:useBean id="goodsId" scope="request" type="java.util.List"/>&ndash;%&gt;--%>
+<%--    <tr>--%>
+<%--        <th>商品名称</th>--%>
+<%--        <th>数量</th>--%>
+<%--    </tr>--%>
+<%--    <c:forEach items="${goodsMap}" var="goodsId">--%>
+<%--        <tr>--%>
+<%--            <td>${goodsMap[goodsId].name}</td>--%>
+<%--            <td>${goodsMap[goodsId]}</td>--%>
+<%--        </tr>--%>
+<%--    </c:forEach>--%>
+
+<%--    </thead>--%>
+<%--    <tbody>--%>
+<%--    </tbody>--%>
+<%--</table>--%>
+<%
+    Map<Integer, Integer> goodsMap = (Map<Integer, Integer>) request.getAttribute("goodsMap");
+%>
 <script>
     $(document).ready(function () {
         // 显示合同商品清单
@@ -841,7 +855,6 @@
 
 </script>
 <%--    </c:if>--%>
-
 
 </body>
 </html>

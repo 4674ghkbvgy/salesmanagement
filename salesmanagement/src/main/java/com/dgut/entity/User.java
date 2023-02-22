@@ -44,7 +44,14 @@ public class User {
         this.phone = phone;
         this.address = address;
     }
-
+    public User(Integer id, String name, Integer type, String email, String phone, String address) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+    }
 
     // Getters and setters
     public Integer getId() {

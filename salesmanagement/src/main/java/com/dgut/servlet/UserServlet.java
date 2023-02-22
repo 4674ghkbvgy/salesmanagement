@@ -41,7 +41,7 @@ public class UserServlet extends HttpServlet {
             int id = Integer.parseInt(request.getParameter("id"));
             userDao.deleteUser(id);
 
-            response.sendRedirect("index.jsp");
+            response.sendRedirect("success.jsp");
         } else if ("add".equals(action)) {
             // 处理添加操作
             String name = request.getParameter("name");

@@ -78,7 +78,10 @@ public class UserDao {
                 users.add(new User(
                         rs.getInt("id"),
                         rs.getString("name"),
-                        rs.getInt("type")
+                        rs.getInt("type"),
+                        rs.getString("email"),
+                        rs.getString("phone"),
+                        rs.getString("address")
                 ));
             }
         }

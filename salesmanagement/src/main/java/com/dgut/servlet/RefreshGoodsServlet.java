@@ -75,6 +75,30 @@ public class RefreshGoodsServlet extends HttpServlet {
         Gson gson = new Gson();
         String json = gson.toJson(jsonArray);
         request.setAttribute("SalesByCustomer", json);
+
+        Map<String, Double> salesByGoods = null;
+        try {
+            SalesDao salesDao=new SalesDao();
+            salesByCustomer = salesDao.getSalesByGoods();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+// 将Map对象转换为JSON格式的字符串
+
+        JsonArray jsonArray2 = new JsonArray();
+        for (Map.Entry<String, Double> entry : salesByCustomer.entrySet()) {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("name", entry.getKey());
+            jsonObject.addProperty("sales", entry.getValue());
+            jsonArray2.add(jsonObject);
+        }
+
+        String json2 = gson.toJson(jsonArray2);
+        request.setAttribute("SalesByGoods", json2);
+
+
+
+
 //         将Map对象转换为JSON格式的字符串
 //        Gson gson = new Gson();
 //        String json = gson.toJson(salesByCustomer);

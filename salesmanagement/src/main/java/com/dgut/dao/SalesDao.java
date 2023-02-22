@@ -41,5 +41,24 @@ public class SalesDao {
 
         return salesByCustomer;
     }
+    public Map<String, Double> getSalesByGoods() throws SQLException {
+        Map<String, Double> salesByCustomer = new HashMap<>();
+
+        try (Statement statement = (Statement) connection.createStatement()) {
+            String query = "SELECT goods.name, SUM(purchase_list_item.quantity * goods.price) AS sales_amount " +
+                    "FROM purchase_list_item " +
+                    "JOIN goods ON purchase_list_item.goods_id = goods.id " +
+                    "GROUP BY goods.name";
+
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                String customerName = resultSet.getString("name");
+                Double totalSales = resultSet.getDouble("sales_amount");
+                salesByCustomer.put(customerName, totalSales);
+            }
+        }
+        return salesByCustomer;
+    }
+
 }
 

@@ -21,6 +21,14 @@
         <url-pattern>/users</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>Unpaid</servlet-name>
+        <servlet-class>com.dgut.servlet.ContractsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Unpaid</servlet-name>
+        <url-pattern>/unpaid</url-pattern>
+    </servlet-mapping>
 
 
     <servlet>

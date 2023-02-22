@@ -42,7 +42,7 @@ public class LoginServlet extends HttpServlet {
                     session.setAttribute("user", user);
                 }
                 req.getSession().setAttribute("user", user);
-
+                req.getSession().setAttribute("user_id", user.getId());
                 ContractDaoImpl contractDaoImpl =new ContractDaoImpl();
                 List<Contract> contractList = contractDaoImpl.findByUser(user);
                 req.getSession().setAttribute("contractUserList", contractList);

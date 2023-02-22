@@ -7,6 +7,9 @@ import com.dgut.entity.PurchaseList;
 import com.dgut.entity.PurchaseListItem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import java.io.IOException;
 import java.io.Serial;
@@ -31,10 +34,10 @@ public class ContractsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 
-        String requestURI = request.getRequestURI();
+//        String requestURI = request.getRequestURI();
 //        String id = requestURI.substring(requestURI.lastIndexOf("/") + 1);
-
-        int contractId = Integer.parseInt(requestURI.substring(requestURI.lastIndexOf("/") + 1));
+        int contractId = Integer.parseInt(request.getParameter("contractsSelect"));
+//        int contractId = Integer.parseInt(requestURI.substring(requestURI.lastIndexOf("/") + 1));
 //        int contractId = Integer.parseInt(request.getParameter("contractId"));
         Contract contract = contractDao.getContractById(contractId);
 
@@ -56,19 +59,34 @@ public class ContractsServlet extends HttpServlet {
             goodsMap.put(item.getGoodsId(), item.getQuantity());
         }
 
+        JsonArray jsonArray = new JsonArray();
+        for (Map.Entry<Integer, Integer> entry : goodsMap.entrySet()) {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("id", entry.getKey());
+            jsonObject.addProperty("stock", entry.getValue());
+            jsonArray.add(jsonObject);
+        }
+        Gson gson = new Gson();
+        String json = gson.toJson(jsonArray);
+        request.setAttribute("Unpaid", json);
+
         List<Goods> goodsList = goodsDao.findAll();
         request.setAttribute("goodsList", goodsList);
-        request.setAttribute("goodsMap", goodsMap);
+
         request.setAttribute("contract", contract);
         List<Contract> contractList = contractDao.findAll();
         request.setAttribute("contractList", contractList);
+//
+//        request.setAttribute("goodsMap", goodsMap);
+//        Gson gson = new Gson();
+//        String json = gson.toJson(goodsMap);
+//
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        String json = objectMapper.writeValueAsString(goodsMap); // 转换成JSON格式
+//        response.setContentType("application/json");
+//        response.setCharacterEncoding("UTF-8");
+//        response.getWriter().write(json);
 
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(goodsMap); // 转换成JSON格式
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(json);
         request.getRequestDispatcher("/index.jsp").forward(request, response);
     }
 }
