@@ -2,8 +2,13 @@ package com.dgut.servlet;
 
 import com.dgut.dao.*;
 import com.dgut.entity.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Serial;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -29,6 +34,10 @@ public class RefreshGoodsServlet extends HttpServlet {
         UserDao userDao= new UserDao();
         List<User> salespersonList = userDao.findAllSalesperson();  // 从数据库或其他地方获取销售员信息
         request.setAttribute("salespersonList", salespersonList);
+
+
+        List<User> UserList = userDao.findAllUser();  // 从数据库或其他地方获取销售员信息
+        request.setAttribute("userList", UserList);
 //        request.getRequestDispatcher("./index.jsp").forward(request, response);
 
         ContractDaoImpl contractDaoImpl =new ContractDaoImpl();
@@ -46,6 +55,39 @@ public class RefreshGoodsServlet extends HttpServlet {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+        Map<String, Double> salesByCustomer = null;
+        try {
+            SalesDao salesDao=new SalesDao();
+            salesByCustomer = salesDao.getSalesByCustomer();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+// 将Map对象转换为JSON格式的字符串
+        JsonArray jsonArray = new JsonArray();
+        for (Map.Entry<String, Double> entry : salesByCustomer.entrySet()) {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("name", entry.getKey());
+            jsonObject.addProperty("sales", entry.getValue());
+            jsonArray.add(jsonObject);
+        }
+
+        Gson gson = new Gson();
+        String json = gson.toJson(jsonArray);
+        request.setAttribute("SalesByCustomer", json);
+//         将Map对象转换为JSON格式的字符串
+//        Gson gson = new Gson();
+//        String json = gson.toJson(salesByCustomer);
+//        request.setAttribute("SalesByCustomer", json );
+        // 设置响应的内容类型为JSON
+//        response.setContentType("application/json");
+//        response.setCharacterEncoding("UTF-8");
+//        // 将JSON字符串写入响应输出流
+//        PrintWriter out = response.getWriter();
+//        out.print(json);
+//        out.flush();
+
+
 
 
 //        Contract contract = contractDao.getContractById(1);

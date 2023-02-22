@@ -35,5 +35,6 @@
     <orderEntry type="library" name="fasterxml.jackson.core.databind" level="project" />
     <orderEntry type="library" name="jstl" level="project" />
     <orderEntry type="library" name="lib" level="project" />
+    <orderEntry type="library" name="google.code.gson" level="project" />
   </component>
 </module>

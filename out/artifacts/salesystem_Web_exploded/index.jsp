@@ -6,6 +6,9 @@
 <%@ page import="com.dgut.entity.Contract" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="com.dgut.entity.PurchaseOrder" %>
+<%@ page import="com.google.gson.Gson" %>
+<%@ page import="com.google.gson.JsonObject" %>
+<%@ page import="com.google.gson.JsonArray" %>
 <%@ page pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
@@ -76,11 +79,17 @@
     User user = (User) session.getAttribute("user");
     List<Goods> goodsList = (List<Goods>) request.getAttribute("goodsList");
     List<User> salespersonList = (List<User>) request.getAttribute("salespersonList");
+    List<User> userList = (List<User>) request.getAttribute("userList");
     List<Contract> contractList = (List<Contract>) request.getAttribute("contractList");
+//    String jsonData = (String)request.getAttribute("SalesByCustomer");
+//    JsonObject salesByCustomer = new Gson().fromJson(jsonData, JsonObject.class);
 
+    String jsonData = (String)request.getAttribute("SalesByCustomer");
+    JsonArray salesByCustomer = new Gson().fromJson(jsonData, JsonArray.class);
 //    Goods[] goodsArray = goodsList.toArray(new Goods[0]);
 %>
 <script type="text/javascript">
+
     function submitOrder() {
         // 获取选中的商品数量和价格
         var totalQuantity = 0;
@@ -123,10 +132,44 @@
         document.body.appendChild(form);
     }
 </script>
+
+<script>
+    $(document).ready(function () {
+        var jsonData = '${SalesByCustomer}'; // 获取JSON数据
+        var data = JSON.parse(jsonData); // 将JSON字符串转换为JavaScript对象
+
+        // 获取表格并清空
+        var table = document.getElementById("myTable");
+        table.innerHTML = "";
+
+        // 在表格中添加表头
+        var header = table.createTHead();
+        var row = header.insertRow(0);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        cell1.innerHTML = "<b>Customer Name</b>";
+        cell2.innerHTML = "<b>Sales Amount</b>";
+
+        // 将数据插入到表格中
+        for (var i = 0; i < data.length; i++) {
+            var row = table.insertRow(i + 1);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            cell1.innerHTML = data[i].name;
+            cell2.innerHTML = data[i].sales;
+        }
+    });
+</script>
+
+
 <%--style=" background: url(img/page.png);background-size: cover;"--%>
 <p></p>
 <h1>公司销售管理系统</h1>
 
+<body>
+<table id="myTable">
+</table>
+</body>
 <p></p>
 <a href="login.jsp">登录页面</a> <a href="regist.jsp">注册页面</a>
 <p></p>
@@ -136,6 +179,28 @@
     <!-- 显示管理员相关页面 -->
 
     <%-- 用于显示所有商品的表格 --%>
+    <h2>Sales by Customer</h2>
+    <table>
+        <tr>
+            <th>Customer Name</th>
+            <th>Total Sales</th>
+        </tr>
+<%--        <c:forEach var="data" items="${jsonData}">--%>
+<%--            <tr>--%>
+<%--                <td>${data.getAsJsonArray().get("name").getAsString()}</td>--%>
+<%--                <td>${data.getAsJsonArray().get("sales").getAsString()}</td>--%>
+<%--            </tr>--%>
+<%--        </c:forEach>--%>
+<%--        <c:forEach var="data" items="${SalesByCustomer}">--%>
+<%--            <tr>--%>
+<%--                <td>${data.name}</td>--%>
+<%--                <td>${data.sales}</td>--%>
+<%--            </tr>--%>
+<%--        </c:forEach>--%>
+
+    </table>
+
+
     <h2>商品列表</h2>
     <table class="table table-bordered table-striped" border="1">
         <thead>
@@ -207,56 +272,6 @@
         <% } %>
         </tbody>
     </table>
-
-    <%--    <div class="container">--%>
-    <%--        <h2>合同详情</h2>--%>
-    <%--        <p>合同编号：xxxx</p>--%>
-    <%--        <p>合同名称：xxxx</p>--%>
-    <%--        <p>合同金额：xxxx元</p>--%>
-    <%--        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">选择购物清单</button>--%>
-    <%--    </div>--%>
-
-    <%--    <!-- 购物清单模态框 -->--%>
-    <%--    <div id="myModal" class="modal fade" role="dialog">--%>
-    <%--        <div class="modal-dialog modal-lg">--%>
-    <%--            <div class="modal-content">--%>
-    <%--                <div class="modal-header">--%>
-    <%--                    <h4 class="modal-title">可选购物清单</h4>--%>
-    <%--                    <button type="button" class="close" data-dismiss="modal">&times;</button>--%>
-    <%--                </div>--%>
-    <%--                <div class="modal-body">--%>
-    <%--                    <table class="table table-bordered table-striped">--%>
-    <%--                        <thead>--%>
-    <%--                        <tr>--%>
-    <%--                            <th>商品名称</th>--%>
-    <%--                            <th>商品单价</th>--%>
-    <%--                            <th>数量</th>--%>
-    <%--                        </tr>--%>
-    <%--                        </thead>--%>
-    <%--                        <tbody>--%>
-    <%--                        <% for (int i = 0; i < goodsList.size(); i++) { %>--%>
-    <%--                        <tr>--%>
-    <%--                            <td><%= goodsList.get(i).getName() %>--%>
-    <%--                            </td>--%>
-    <%--                            <td><%= goodsList.get(i).getPrice() %>--%>
-    <%--                            </td>--%>
-    <%--                            <td>--%>
-    <%--                                <input type="number" class="form-control" id="quantity_<%= i %>"--%>
-    <%--                                       name="quantity_<%= i %>" value="0" min="0"--%>
-    <%--                                       max="<%= goodsList.get(i).getStock() %>"/>--%>
-    <%--                            </td>--%>
-    <%--                        </tr>--%>
-    <%--                        <% } %>--%>
-    <%--                        </tbody>--%>
-    <%--                    </table>--%>
-    <%--                </div>--%>
-    <%--                <div class="modal-footer">--%>
-    <%--                    <button type="button" class="btn btn-primary" onclick="submitOrder()">付款</button>--%>
-    <%--                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>--%>
-    <%--                </div>--%>
-    <%--            </div>--%>
-    <%--        </div>--%>
-    <%--    </div>--%>
 
 
     <h2>录入合同</h2>
@@ -363,6 +378,85 @@
 <c:if test="${sessionScope.user.type eq 1}">
     <p>您是销售管理员用户</p>
     <!-- 显示管理员相关页面 -->
+    <h2>User List</h2>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Password</th>
+            <th>Type</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Address</th>
+            <th>Actions</th>
+        </tr>
+        <c:forEach items="${userList}" var="user">
+            <tr>
+                <td><c:out value="${user.id}"/></td>
+                <td><c:out value="${user.name}"/></td>
+                <td><c:out value="${user.password}"/></td>
+                <td><c:out value="${user.type}"/></td>
+                <td><c:out value="${user.email}"/></td>
+                <td><c:out value="${user.phone}"/></td>
+                <td><c:out value="${user.address}"/></td>
+                <td>
+<%--                    <form method="POST" action="users?action=edit">--%>
+<%--                        <input type="hidden" name="id" value="${user.id}">--%>
+<%--                    </form>--%>
+                    <form method="POST" action="users?action=delete">
+                        <input type="hidden" name="id" value="${user.id}">
+                        <input type="submit" value="Delete">
+                    </form>
+                </td>
+            </tr>
+        </c:forEach>
+    </table>
+
+    <h2>Add/Edit User</h2>
+    <form method="POST" action="users?action=edit">
+<%--        <c:if test="${not empty user.id}">--%>
+            <%--@declare id="password"--%><%--@declare id="type"--%><%--@declare id="email"--%><%--@declare id="phone"--%><%--@declare id="address"--%>
+<%--            <input type="hidden" name="id" value="${user.id}">--%>
+<%--        </c:if>--%>
+    <%--@declare id="id"--%>
+    <label for="id">ID:</label>
+        <input type="text" name="id" value="${user.id}">
+        <label for="name">Name:</label>
+        <input type="text" name="name" value="${user.name}">
+        <br>
+        <label for="password">Password:</label>
+        <input type="password" name="password" value="${user.password}">
+        <br>
+        <label for="type">Type:</label>
+        <input type="text" name="type" value="${user.type}">
+        <br>
+        <label for="email">Email:</label>
+        <input type="email" name="email" value="${user.email}">
+        <br>
+        <label for="phone">Phone:</label>
+        <input type="text" name="phone" value="${user.phone}">
+        <br>
+        <label for="address">Address:</label>
+        <input type="text" name="address" value="${user.address}">
+        <br>
+        <input type="submit" value="edit">
+    </form>
+
+
+    <h2>Sales by Customer</h2>
+    <table>
+        <tr>
+            <th>Customer Name</th>
+            <th>Total Sales</th>
+        </tr>
+        <c:forEach var="row" items="${salesByCustomer}">
+            <tr>
+                <td>${row.name}</td>
+                <td>${row.sales}</td>
+            </tr>
+        </c:forEach>
+    </table>
+
 </c:if>
 <c:if test="${sessionScope.user.type eq 2}">
     <p>您是仓库管理员</p>
@@ -381,8 +475,8 @@
         <tbody>
         <% for (PurchaseOrder po :  (List<PurchaseOrder>) request.getAttribute("PurchaseOrderList")) { %>
         <tr>
-            <td><%= po.getId() %></td>
-            <td><%= goodsList.get(po.getId()).getName() %></td>
+            <td><%= po.getProductId() %></td>
+            <td><%= goodsList.get(po.getProductId()).getName() %></td>
             <td><%= po.getQuantity() %></td>
             <td><%= po.getPurchaseDate() %></td>
             <td>
