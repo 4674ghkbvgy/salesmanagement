@@ -78,6 +78,14 @@
         <url-pattern>/contract/submit</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+    <servlet-name>ContractEditServlet</servlet-name>
+    <servlet-class>com.dgut.servlet.ContractEditServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+    <servlet-name>ContractEditServlet</servlet-name>
+    <url-pattern>/contract/edit</url-pattern>
+    </servlet-mapping>
 
     <servlet>
         <servlet-name>RefreshGoodsServlet</servlet-name>
@@ -122,7 +130,9 @@
 
     <filter-mapping>
         <filter-name>JspFilter</filter-name>
+<!--        <url-pattern>/index.jsp</url-pattern>-->
         <url-pattern>/index.jsp</url-pattern>
+        <url-pattern>/unpaid</url-pattern>
 <!--        <url-pattern>*.jsp</url-pattern>-->
     </filter-mapping>
 

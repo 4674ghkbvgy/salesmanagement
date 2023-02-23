@@ -27,7 +27,6 @@ public class ContractDaoImpl implements ContractDao {
             // 启动事务
             connection.setAutoCommit(false);
             // 创建合同
-
             // 创建采购清单
             String sql2 = "insert into purchase_list () values ()";
             pstmt2 = connection.prepareStatement(sql2, Statement.RETURN_GENERATED_KEYS);
@@ -64,8 +63,45 @@ public class ContractDaoImpl implements ContractDao {
         } finally {
             MyUtil.close(connection, pstmt1);
         }
-
-
+    }
+    public void updateContractAndPurchaseList(Contract contract, PurchaseList purchaseList, List<PurchaseListItem> purchaseListItems) throws SQLException {
+        Connection connection = null;
+        PreparedStatement pstmt1 = null;
+        PreparedStatement pstmt2 = null;
+        try {
+            connection = getConnection();
+            // 启动事务
+            connection.setAutoCommit(false);
+            // 更新合同
+            String sql1 = "update contract set customer_id=?, salesperson_id=?, start_date=?, end_date=?, amount=?, status=?, purchase_list_id=? where id=?";
+            pstmt1 = connection.prepareStatement(sql1);
+            pstmt1.setInt(1, contract.getCustomerId());
+            pstmt1.setInt(2, contract.getSalespersonId());
+            pstmt1.setDate(3, new java.sql.Date(contract.getStartDate().getTime()));
+            pstmt1.setDate(4, new java.sql.Date(contract.getEndDate().getTime()));
+            pstmt1.setDouble(5, contract.getAmount());
+            pstmt1.setString(6, contract.getStatus().toString());
+            pstmt1.setInt(7, purchaseList.getId());
+            pstmt1.setInt(8, contract.getId());
+            pstmt1.executeUpdate();
+            // 更新采购清单项目
+            for (PurchaseListItem purchaseListItem : purchaseListItems) {
+                String sql2 = "update purchase_list_item set goods_id=?, quantity=? where purchase_list_id=? and goods_id=?";
+                pstmt2 = connection.prepareStatement(sql2);
+                pstmt2.setInt(1, purchaseListItem.getGoodsId());
+                pstmt2.setInt(2, purchaseListItem.getQuantity());
+                pstmt2.setInt(3, purchaseListItem.getPurchaseListId());
+                pstmt2.setInt(4, purchaseListItem.getGoodsId());
+                pstmt2.executeUpdate();
+            }
+            connection.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            connection.rollback();
+            throw new SQLException("更新合同失败！");
+        } finally {
+            MyUtil.close(connection, pstmt1);
+        }
     }
 
     @Override

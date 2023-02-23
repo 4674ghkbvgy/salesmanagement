@@ -455,8 +455,9 @@
 <%--            <input type="hidden" name="id" value="${user.id}">--%>
 <%--        </c:if>--%>
     <%--@declare id="id"--%>
-    <label for="id">ID:</label>
+        <label for="id">ID:</label>
         <input type="text" name="id" value="${user.id}">
+        <br>
         <label for="name">Name:</label>
         <input type="text" name="name" value="${user.name}">
         <br>
@@ -476,6 +477,145 @@
         <input type="text" name="address" value="${user.address}">
         <br>
         <input type="submit" value="edit">
+    </form>
+
+    <h2>合同列表</h2>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Customer ID</th>
+            <th>Salesperson ID</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Purchase List ID</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% for (Contract contract : contractList) { %>
+        <tr>
+            <td><%= contract.getId() %>
+            </td>
+            <td><%= contract.getCustomerId() %>
+            </td>
+            <td><%= contract.getSalespersonId() %>
+            </td>
+            <td><%= contract.getStartDate() %>
+            </td>
+            <td><%= contract.getEndDate() %>
+            </td>
+            <td><%= contract.getAmount() %>
+            </td>
+            <td><%= contract.getStatus() %>
+            </td>
+            <td><%= contract.getPurchaseListId() %>
+            </td>
+            <td>
+                <a href="editContract.jsp?id=<%= contract.getId() %>">Edit</a>
+                <a href="delete_contract.jsp?id=<%= contract.getId() %>">Delete</a>
+            </td>
+        </tr>
+        <% } %>
+        </tbody>
+    </table>
+    <form action="./unpaid" method="get">
+        <div>
+            <select id="econtractsSelect" name="contractsSelect">
+                <option value="-1">请选择合同</option>
+                <c:forEach items="${contractList}" var="contract">
+                    <option value="${contract.id}">${contract.id}</option>
+                </c:forEach>
+            </select>
+            <input type="submit" value="显示商品清单">
+        </div>
+    </form>
+    <h2>搜索合同购物列表</h2>
+    <table id="unpaidTable">
+
+    </table>
+    <h2>修改合同</h2>
+    <form action="./contract/edit" method="post">
+        <div>
+            <label for="editContract_id">合同ID:</label>
+            <select id="editContract_id" name="editContract_id">
+                <option value="-1">请选择合同</option>
+                <c:forEach items="${contractList}" var="contract">
+                    <option value="${contract.id}">${contract.id}</option>
+                </c:forEach>
+            </select>
+        </div>
+        <div>
+            <label for="customer_id">客户ID:</label>
+            <input type="text" id="ecustomer_id" name="customer_id" value="${sessionScope.user.id}">
+        </div>
+        <div>
+            <label for="salesperson_id">销售员ID:</label>
+            <select id="esalesperson_id" name="salesperson_id">
+                <!-- 销售员选项列表 -->
+                <!-- 从后端获取，遍历显示 -->
+                <c:forEach var="salesperson" items="${salespersonList}">
+                    <option value="${salesperson.id}">${salesperson.name}</option>
+                </c:forEach>
+            </select>
+        </div>
+        <div>
+            <label for="start_date">开始日期:</label>
+            <input type="date" id="estart_date" name="start_date">
+        </div>
+        <div>
+            <label for="end_date">结束日期:</label>
+            <input type="date" id="eend_date" name="end_date">
+        </div>
+        <div>
+            <label for="status">状态:</label>
+            <select id="estatus" name="status">
+                <option value="Signed">Signed</option>
+                <option value="InProgress">InProgress</option>
+                <option value="Completed">Completed</option>
+            </select>
+        </div>
+        <!-- 商品信息 -->
+        <table id="editContract-table">
+            <thead>
+            <tr>
+                <th>商品ID</th>
+                <th>商品名称</th>
+                <th>商品价格</th>
+                <th>选择数量</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 循环遍历 goodsList，生成商品行 -->
+            <% for (int i = 0; i < goodsList.size(); i++) { %>
+            <tr>
+                <td>
+                    <%= goodsList.get(i).getId() %>
+                </td>
+                <td>
+                    <%= goodsList.get(i).getName() %>
+                </td>
+                <td>
+                    <%= goodsList.get(i).getPrice() %>
+                </td>
+                <td>
+                    <!-- 增加一个 checkbox，用来标识该商品是否被选中 -->
+                    <input type="checkbox" id="editContract_checkbox" name="selectedPaymentsIndex" class="goods-checkbox"
+                           value="<%= i %>" data-index="<%= i %>" onclick="calcTotal()"/>
+                    <input type="number" id="editContract_number" name="paymentsCount" class="goods-count" data-index="<%= i %>"
+                           value="0" min="0" onchange="calcTotal()"/>
+                </td>
+                <td class="goods-total" data-index="<%= i %>"></td>
+            </tr>
+            <% } %>
+            </tbody>
+        </table>
+        <!-- 提交按钮 -->
+        <div>
+            <input type="submit" value="提交">
+        </div>
     </form>
 
     <h2>添加新商品</h2>

@@ -101,7 +101,7 @@ public class PaymentServlet extends HttpServlet {
                 throw new RuntimeException(e);
             }
 
-            // 创建合同
+            // 创建支付清单
             Payment payment = new Payment(contractId, purchaseListId, totalAmount, Date.valueOf(LocalDate.now()));
             PaymentDao paymentDao = new PaymentDao();
             try {
