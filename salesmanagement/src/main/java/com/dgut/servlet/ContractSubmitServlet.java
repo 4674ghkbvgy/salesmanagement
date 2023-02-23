@@ -63,7 +63,7 @@ public class ContractSubmitServlet extends HttpServlet {
                 double subtotal = price * quantity;
                 totalAmount += subtotal;
                 PurchaseListItem purchaseListItem = new PurchaseListItem();
-                purchaseListItem.setGoods(goods);
+//                purchaseListItem.setGoods(goods);
                 purchaseListItem.setGoodsId(goods.getId());
                 purchaseListItem.setQuantity(quantity);
                 purchaseListItem.setSubtotal(subtotal);

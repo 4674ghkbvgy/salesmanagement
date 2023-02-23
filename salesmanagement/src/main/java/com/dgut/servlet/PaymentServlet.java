@@ -73,11 +73,26 @@ public class PaymentServlet extends HttpServlet {
                 double subtotal = price * quantity;
                 totalAmount += subtotal;
                 PurchaseListItem purchaseListItem = new PurchaseListItem();
-                purchaseListItem.setGoods(goods);
+//              purchaseListItem.setGoods(goods);
                 purchaseListItem.setGoodsId(goods.getId());
                 purchaseListItem.setQuantity(quantity);
                 purchaseListItem.setSubtotal(subtotal);
                 purchaseListItems.add(purchaseListItem);
+            }
+            Map<Integer, Integer> goodsMap = new HashMap<>();
+            for (PurchaseListItem item : purchaseListItems) {
+                goodsMap.put(item.getGoodsId(), item.getQuantity());
+            }
+
+            //检查超买
+            try {
+                if(!checkPurchaseListItems(purchaseListId,goodsMap))
+                {
+                    response.sendRedirect(request.getContextPath() + "/payTooMuch.jsp");
+                    return;
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
 
             try {
@@ -95,11 +110,31 @@ public class PaymentServlet extends HttpServlet {
                 throw new RuntimeException(ex);
             }
 
-
 // 重定向到合同列表页面
             response.sendRedirect(request.getContextPath() + "/creatPayment.jsp");
 
         }
+    }
+
+    private boolean checkPurchaseListItems(int purchaseListId, Map<Integer, Integer> goodsMap) throws SQLException {
+        List<PurchaseListItem> purchaseList = purchaseListDao.getPurchaseListItemsByPurchaseListId(purchaseListId);
+        if (purchaseList == null) {
+            return false;
+        }
+        for (Map.Entry<Integer, Integer> entry : goodsMap.entrySet()) {
+            int goodsId = entry.getKey();
+            int quantity = entry.getValue();
+            if (quantity <= 0) {
+                return false;
+            }
+            PurchaseListItem item = purchaseListDao.getPurchaseListItemByPurchaseListIdAndGoodsId(purchaseListId, goodsId);
+
+            if (item == null || item.getQuantity() < quantity) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
 
@@ -153,27 +188,6 @@ public class PaymentServlet extends HttpServlet {
 //        response.sendRedirect(request.getContextPath() + "/contracts");
 //    }
 //
-//    private boolean checkPurchaseListItems(int purchaseListId, Map<Integer, Integer> goodsMap) throws SQLException {
-//        List<PurchaseListItem> purchaseList = purchaseListDao.getPurchaseListItemsByPurchaseListId(purchaseListId);
-//        if (purchaseList == null) {
-//            return false;
-//        }
-//        for (Map.Entry<Integer, Integer> entry : goodsMap.entrySet()) {
-//            int goodsId = entry.getKey();
-//            int quantity = entry.getValue();
-//
-//            if (quantity <= 0) {
-//                return false;
-//            }
-//
-//            PurchaseListItem item = purchaseListDao.getPurchaseListItemByPurchaseListIdAndGoodsId(purchaseListId, goodsId);
-//
-//            if (item == null || item.getQuantity() < quantity) {
-//                return false;
-//            }
-//        }
-//
-//        return true;
-//    }
+
 //
 //}

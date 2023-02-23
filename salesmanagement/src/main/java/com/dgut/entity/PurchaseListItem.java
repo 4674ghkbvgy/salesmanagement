@@ -4,9 +4,6 @@ public class PurchaseListItem {
     private Integer purchaseListId;
     private Integer goodsId;
     private Integer quantity;
-
-
-
     private Double subtotal;
 
     public PurchaseListItem() {}
@@ -41,10 +38,9 @@ public class PurchaseListItem {
         this.quantity = quantity;
     }
 
-    public void setGoods(Goods goods) {
-    }
-
-
+//    public void setGoods(Goods goods) {
+//
+//    }
     public Double getSubtotal() {
         return subtotal;
     }

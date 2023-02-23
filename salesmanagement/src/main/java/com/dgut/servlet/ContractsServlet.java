@@ -25,7 +25,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+//输出未付款json
 public class ContractsServlet extends HttpServlet {
     private final ContractDaoImpl contractDao = new ContractDaoImpl();
     private final PurchaseListDao purchaseListItemDao = new PurchaseListDao();

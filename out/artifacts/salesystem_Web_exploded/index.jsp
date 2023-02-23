@@ -9,6 +9,7 @@
 <%@ page import="com.google.gson.Gson" %>
 <%@ page import="com.google.gson.JsonObject" %>
 <%@ page import="com.google.gson.JsonArray" %>
+<%@ page import="com.dgut.dao.GoodsDaoImpl" %>
 <%@ page pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
@@ -498,6 +499,35 @@
 <c:if test="${sessionScope.user.type eq 2}">
     <p>您是仓库管理员</p>
     <!-- 显示仓库管理员相关页面 -->
+
+    <h2>商品列表</h2>
+    <table class="table table-bordered table-striped" border="1">
+        <thead>
+        <tr>
+            <th>商品 ID</th>
+            <th>商品名称</th>
+            <th>价格</th>
+            <th>描述</th>
+            <th>库存</th>
+                <%--                <th>操作</th>--%>
+        </tr>
+        </thead>
+        <tbody>
+        <c:forEach items="${goodsList}" var="good">
+            <tr>
+                <td>${good.id}</td>
+                <td>${good.name}</td>
+                <td>${good.price}</td>
+                <td>${good.description}</td>
+                <td>${good.stock}</td>
+                    <%--                    <td>--%>
+                    <%--                        <a href="updateGoods.jsp?id=${good.id}">编辑</a>--%>
+                    <%--                        <a href="deleteGoods.jsp?id=${good.id}">删除</a>--%>
+                    <%--                    </td>--%>
+            </tr>
+        </c:forEach>
+        </tbody>
+    </table>
     <h2>历史进货单</h2>
     <table id="purchase-order" class="table">
         <thead>
@@ -510,10 +540,15 @@
         </tr>
         </thead>
         <tbody>
-        <% for (PurchaseOrder po :  (List<PurchaseOrder>) request.getAttribute("PurchaseOrderList")) { %>
+        <% for (PurchaseOrder po :  (List<PurchaseOrder>) request.getAttribute("PurchaseOrderList")) {
+        %>
         <tr>
             <td><%= po.getProductId() %></td>
-            <td><%= goodsList.get(po.getProductId()).getName() %></td>
+            <%for(int i=0;i<goodsList.size();i++){%>
+            <% if( goodsList.get(i).getId()==po.getProductId() ){%>
+            <td>   <%= goodsList.get(i).getName()%> </td>
+            <%}}%>
+<%--            <td><%= goodsList.().getName() %></td>--%>
             <td><%= po.getQuantity() %></td>
             <td><%= po.getPurchaseDate() %></td>
             <td>
@@ -534,6 +569,7 @@
         <input type="date" name="purchase_date" />
         <input type="submit" value="提交" />
     </form>
+
     <h2>添加新商品</h2>
     <form accept-charset="UTF-8" action="createGoods.jsp" method="post">
         <div class="form-group">
