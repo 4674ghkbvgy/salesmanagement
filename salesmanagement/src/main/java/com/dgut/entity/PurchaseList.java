@@ -15,9 +15,9 @@ public class PurchaseList {
         this.id = id;
     }
 
-    public void setContract(Contract contract) {
-    }
-
-    public void setPurchaseListItems(List<PurchaseListItem> purchaseListItems) {
-    }
+//    public void setContract(Contract contract) {
+//    }
+//
+//    public void setPurchaseListItems(List<PurchaseListItem> purchaseListItems) {
+//    }
 }

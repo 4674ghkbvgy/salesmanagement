@@ -172,21 +172,23 @@ public class ContractDaoImpl implements ContractDao {
         return contractList;
     }
 
-    @Override
-    public int save(Contract contract) {
-        return 0;
-    }
 
     @Override
-    public int update(Contract contract) {
-        return 0;
-    }
-
-    @Override
+    //来不及
     public int deleteById(int id) {
         return 0;
     }
 
+
+    public void updateStatus(int contractId, String status) throws SQLException {
+        String sql = "UPDATE contract SET status = ? WHERE id = ?";
+        try (Connection conn = MyUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, status);
+            stmt.setInt(2, contractId);
+            stmt.executeUpdate();
+        }
+    }
 
     public Contract getContractById(int contractId) {
         List<Contract> contractList = new ArrayList<>();

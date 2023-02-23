@@ -132,4 +132,19 @@ public class GoodsDaoImpl implements GoodsDao {
         }
         return row;
     }
+
+
+    public void decreaseStock(int goodsId, int quantity) throws SQLException {
+        String sql = "UPDATE stock SET quantity = quantity - ? WHERE product_id = ? AND quantity >= ?";
+        try (Connection conn = MyUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, quantity);
+            stmt.setInt(2, goodsId);
+            stmt.setInt(3, quantity);
+            int rows = stmt.executeUpdate();
+            if (rows == 0) {
+                throw new SQLException("Failed to decrease stock for goods id " + goodsId);
+            }
+        }
+    }
 }

@@ -735,50 +735,6 @@
     <!-- 显示普通用户相关页面 -->
 
 
-    <h2>您签订的合同列表</h2>
-    <table border="1">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Customer ID</th>
-            <th>Salesperson ID</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Amount</th>
-            <th>Status</th>
-            <th>Purchase List ID</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        <c:if test="${not empty contractUserList}">
-            <% for (Contract contract : contractUserList) { %>
-            <tr>
-                <td><%= contract.getId() %>
-                </td>
-                <td><%= contract.getCustomerId() %>
-                </td>
-                <td><%= contract.getSalespersonId() %>
-                </td>
-                <td><%= contract.getStartDate() %>
-                </td>
-                <td><%= contract.getEndDate() %>
-                </td>
-                <td><%= contract.getAmount() %>
-                </td>
-                <td><%= contract.getStatus() %>
-                </td>
-                <td><%= contract.getPurchaseListId() %>
-                </td>
-                <td>
-                    <a href="edit_contract.jsp?id=<%= contract.getId() %>">Edit</a>
-                    <a href="delete_contract.jsp?id=<%= contract.getId() %>">Delete</a>
-                </td>
-            </tr>
-            <% } %>
-        </c:if>
-        </tbody>
-    </table>
 
     <h2>录入合同</h2>
 
@@ -888,6 +844,50 @@
     </table>
 
 
+    <h2>您签订的合同列表</h2>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Customer ID</th>
+            <th>Salesperson ID</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Purchase List ID</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <c:if test="${not empty contractUserList}">
+            <% for (Contract contract : contractUserList) { %>
+            <tr>
+                <td><%= contract.getId() %>
+                </td>
+                <td><%= contract.getCustomerId() %>
+                </td>
+                <td><%= contract.getSalespersonId() %>
+                </td>
+                <td><%= contract.getStartDate() %>
+                </td>
+                <td><%= contract.getEndDate() %>
+                </td>
+                <td><%= contract.getAmount() %>
+                </td>
+                <td><%= contract.getStatus() %>
+                </td>
+                <td><%= contract.getPurchaseListId() %>
+                </td>
+                <td>
+                    <a href="edit_contract.jsp?id=<%= contract.getId() %>">Edit</a>
+                    <a href="delete_contract.jsp?id=<%= contract.getId() %>">Delete</a>
+                </td>
+            </tr>
+            <% } %>
+        </c:if>
+        </tbody>
+    </table>
 
     <h2>合同的多次支付</h2>
     <form action="./unpaid" method="get">

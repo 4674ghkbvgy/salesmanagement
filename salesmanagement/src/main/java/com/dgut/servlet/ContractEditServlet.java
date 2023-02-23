@@ -34,6 +34,7 @@ public class ContractEditServlet extends HttpServlet {
 
         // 创建合同对象
         Contract contract = new Contract();
+        contract.setId(Integer.valueOf(request.getParameter("editContract_id")));
         contract.setCustomerId(Integer.parseInt(customerId));
         contract.setSalespersonId(Integer.parseInt(salespersonId));
         contract.setStartDate(startDate);
@@ -43,9 +44,11 @@ public class ContractEditServlet extends HttpServlet {
         // 获取商品信息
         List<PurchaseListItem> purchaseListItems = new ArrayList<>();
         // 获取所有被选中的商品
-        String[] selectedGoodsIndex = request.getParameterValues("selectedGoodsIndex");
-        String[] goodsCount = request.getParameterValues("goodsCount");
+        String[] selectedGoodsIndex = request.getParameterValues("selectedPaymentsIndex");
+        String[] goodsCount = request.getParameterValues("paymentsCount");
         Double totalAmount = 0.0;
+        ContractDaoImpl contractDaoImpl = new ContractDaoImpl();
+        int purchaseListId =contractDaoImpl.getContractById(contract.getId()).getPurchaseListId();
         if (selectedGoodsIndex != null) {
             // 循环遍历所有被选中的商品
             for (String index : selectedGoodsIndex) {
@@ -63,6 +66,7 @@ public class ContractEditServlet extends HttpServlet {
                 purchaseListItem.setGoodsId(goods.getId());
                 purchaseListItem.setQuantity(quantity);
                 purchaseListItem.setSubtotal(subtotal);
+                purchaseListItem.setPurchaseListId(purchaseListId);
                 purchaseListItems.add(purchaseListItem);
             }
 
@@ -72,20 +76,21 @@ public class ContractEditServlet extends HttpServlet {
 
             // 创建采购清单
             PurchaseList purchaseList = new PurchaseList();
-            contract.setPurchaseListId(purchaseList.getId());
+//            contract.setPurchaseListId(purchaseList.getId());
 //            purchaseList.setContract(contract);
-            purchaseList.setPurchaseListItems(purchaseListItems);
+//            purchaseList.setId(contract.getPurchaseListId());
 
 
             try {
-                ContractDaoImpl contractDaoImpl = new ContractDaoImpl();
+
+                purchaseList.setId(contractDaoImpl.getContractById(contract.getId()).getPurchaseListId());
                 contractDaoImpl.updateContractAndPurchaseList(contract, purchaseList, purchaseListItems);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
 
 // 重定向到合同列表页面
-            response.sendRedirect(request.getContextPath() + "/editContract.jsp");
+            response.sendRedirect(request.getContextPath() + "/index.jsp");
 
         }
     }

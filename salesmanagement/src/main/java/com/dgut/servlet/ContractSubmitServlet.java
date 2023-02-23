@@ -78,7 +78,7 @@ public class ContractSubmitServlet extends HttpServlet {
             PurchaseList purchaseList = new PurchaseList();
             contract.setPurchaseListId(purchaseList.getId());
 //            purchaseList.setContract(contract);
-            purchaseList.setPurchaseListItems(purchaseListItems);
+//            purchaseList.setPurchaseListItems(purchaseListItems);
 
 
             try {

@@ -1,0 +1,96 @@
+<html>
+<head>
+<title>ContractsServlet.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #808080;}
+.s3 { color: #6a8759;}
+.s4 { color: #6897bb;}
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ContractsServlet.java</font>
+</center></td></tr></table>
+<pre><a name="l1"><span class="ln">1    </span></a><span class="s0">package </span><span class="s1">com.dgut.servlet</span><span class="s0">;</span>
+<a name="l2"><span class="ln">2    </span></a><span class="s0">import </span><span class="s1">com.dgut.dao.*</span><span class="s0">;</span>
+<a name="l3"><span class="ln">3    </span></a>
+<a name="l4"><span class="ln">4    </span></a><span class="s0">import </span><span class="s1">com.dgut.entity.Contract</span><span class="s0">;</span>
+<a name="l5"><span class="ln">5    </span></a><span class="s0">import </span><span class="s1">com.dgut.entity.Goods</span><span class="s0">;</span>
+<a name="l6"><span class="ln">6    </span></a><span class="s0">import </span><span class="s1">com.dgut.entity.PurchaseList</span><span class="s0">;</span>
+<a name="l7"><span class="ln">7    </span></a><span class="s0">import </span><span class="s1">com.dgut.entity.PurchaseListItem</span><span class="s0">;</span>
+<a name="l8"><span class="ln">8    </span></a>
+<a name="l9"><span class="ln">9    </span></a><span class="s0">import </span><span class="s1">com.fasterxml.jackson.databind.ObjectMapper</span><span class="s0">;</span>
+<a name="l10"><span class="ln">10   </span></a>
+<a name="l11"><span class="ln">11   </span></a><span class="s0">import </span><span class="s1">java.io.IOException</span><span class="s0">;</span>
+<a name="l12"><span class="ln">12   </span></a><span class="s0">import </span><span class="s1">java.io.Serial</span><span class="s0">;</span>
+<a name="l13"><span class="ln">13   </span></a><span class="s0">import </span><span class="s1">java.sql.SQLException</span><span class="s0">;</span>
+<a name="l14"><span class="ln">14   </span></a><span class="s0">import </span><span class="s1">java.util.ArrayList</span><span class="s0">;</span>
+<a name="l15"><span class="ln">15   </span></a><span class="s0">import </span><span class="s1">java.sql.Date</span><span class="s0">;</span>
+<a name="l16"><span class="ln">16   </span></a><span class="s0">import </span><span class="s1">java.util.HashMap</span><span class="s0">;</span>
+<a name="l17"><span class="ln">17   </span></a><span class="s0">import </span><span class="s1">java.util.List</span><span class="s0">;</span>
+<a name="l18"><span class="ln">18   </span></a><span class="s0">import </span><span class="s1">java.util.Map</span><span class="s0">;</span>
+<a name="l19"><span class="ln">19   </span></a>
+<a name="l20"><span class="ln">20   </span></a><span class="s0">import </span><span class="s1">javax.servlet.ServletException</span><span class="s0">;</span>
+<a name="l21"><span class="ln">21   </span></a><span class="s0">import </span><span class="s1">javax.servlet.annotation.WebServlet</span><span class="s0">;</span>
+<a name="l22"><span class="ln">22   </span></a><span class="s0">import </span><span class="s1">javax.servlet.http.HttpServlet</span><span class="s0">;</span>
+<a name="l23"><span class="ln">23   </span></a><span class="s0">import </span><span class="s1">javax.servlet.http.HttpServletRequest</span><span class="s0">;</span>
+<a name="l24"><span class="ln">24   </span></a><span class="s0">import </span><span class="s1">javax.servlet.http.HttpServletResponse</span><span class="s0">;</span>
+<a name="l25"><span class="ln">25   </span></a>
+<a name="l26"><span class="ln">26   </span></a><span class="s0">public class </span><span class="s1">ContractsServlet </span><span class="s0">extends </span><span class="s1">HttpServlet {</span>
+<a name="l27"><span class="ln">27   </span></a>    <span class="s0">private final </span><span class="s1">ContractDaoImpl contractDao = </span><span class="s0">new </span><span class="s1">ContractDaoImpl()</span><span class="s0">;</span>
+<a name="l28"><span class="ln">28   </span></a>    <span class="s0">private final </span><span class="s1">PurchaseListDao purchaseListItemDao = </span><span class="s0">new </span><span class="s1">PurchaseListDao()</span><span class="s0">;</span>
+<a name="l29"><span class="ln">29   </span></a>    <span class="s0">private final </span><span class="s1">GoodsDaoImpl goodsDao = </span><span class="s0">new </span><span class="s1">GoodsDaoImpl()</span><span class="s0">;</span>
+<a name="l30"><span class="ln">30   </span></a>
+<a name="l31"><span class="ln">31   </span></a>    <span class="s0">protected void </span><span class="s1">doGet(HttpServletRequest request</span><span class="s0">, </span><span class="s1">HttpServletResponse response) </span><span class="s0">throws </span><span class="s1">ServletException</span><span class="s0">, </span><span class="s1">IOException {</span>
+<a name="l32"><span class="ln">32   </span></a>
+<a name="l33"><span class="ln">33   </span></a>
+<a name="l34"><span class="ln">34   </span></a>        <span class="s1">String requestURI = request.getRequestURI()</span><span class="s0">;</span>
+<a name="l35"><span class="ln">35   </span></a><span class="s2">//        String id = requestURI.substring(requestURI.lastIndexOf(&quot;/&quot;) + 1);</span>
+<a name="l36"><span class="ln">36   </span></a>
+<a name="l37"><span class="ln">37   </span></a>        <span class="s0">int </span><span class="s1">contractId = Integer.parseInt(requestURI.substring(requestURI.lastIndexOf(</span><span class="s3">&quot;/&quot;</span><span class="s1">) + </span><span class="s4">1</span><span class="s1">))</span><span class="s0">;</span>
+<a name="l38"><span class="ln">38   </span></a><span class="s2">//        int contractId = Integer.parseInt(request.getParameter(&quot;contractId&quot;));</span>
+<a name="l39"><span class="ln">39   </span></a>        <span class="s1">Contract contract = contractDao.getContractById(contractId)</span><span class="s0">;</span>
+<a name="l40"><span class="ln">40   </span></a>
+<a name="l41"><span class="ln">41   </span></a>        <span class="s0">if </span><span class="s1">(contract == </span><span class="s0">null</span><span class="s1">) {</span>
+<a name="l42"><span class="ln">42   </span></a>            <span class="s1">response.setStatus(</span><span class="s4">404</span><span class="s1">)</span><span class="s0">;</span>
+<a name="l43"><span class="ln">43   </span></a>            <span class="s1">response.getWriter().println(</span><span class="s3">&quot;Contract not found&quot;</span><span class="s1">)</span><span class="s0">;</span>
+<a name="l44"><span class="ln">44   </span></a>            <span class="s0">return;</span>
+<a name="l45"><span class="ln">45   </span></a>        <span class="s1">}</span>
+<a name="l46"><span class="ln">46   </span></a>
+<a name="l47"><span class="ln">47   </span></a>        <span class="s1">List&lt;PurchaseListItem&gt; purchaseListItems = </span><span class="s0">null;</span>
+<a name="l48"><span class="ln">48   </span></a>        <span class="s0">try </span><span class="s1">{</span>
+<a name="l49"><span class="ln">49   </span></a>            <span class="s1">purchaseListItems = purchaseListItemDao.getPurchaseListItemsByPurchaseListId(contract.getPurchaseListId())</span><span class="s0">;</span>
+<a name="l50"><span class="ln">50   </span></a>        <span class="s1">} </span><span class="s0">catch </span><span class="s1">(SQLException e) {</span>
+<a name="l51"><span class="ln">51   </span></a>            <span class="s0">throw new </span><span class="s1">RuntimeException(e)</span><span class="s0">;</span>
+<a name="l52"><span class="ln">52   </span></a>        <span class="s1">}</span>
+<a name="l53"><span class="ln">53   </span></a>        <span class="s1">Map&lt;Integer</span><span class="s0">, </span><span class="s1">Integer&gt; goodsMap = </span><span class="s0">new </span><span class="s1">HashMap&lt;&gt;()</span><span class="s0">;</span>
+<a name="l54"><span class="ln">54   </span></a>
+<a name="l55"><span class="ln">55   </span></a>        <span class="s0">for </span><span class="s1">(PurchaseListItem item : purchaseListItems) {</span>
+<a name="l56"><span class="ln">56   </span></a>            <span class="s1">goodsMap.put(item.getGoodsId()</span><span class="s0">, </span><span class="s1">item.getQuantity())</span><span class="s0">;</span>
+<a name="l57"><span class="ln">57   </span></a>        <span class="s1">}</span>
+<a name="l58"><span class="ln">58   </span></a>
+<a name="l59"><span class="ln">59   </span></a>        <span class="s1">List&lt;Goods&gt; goodsList = goodsDao.findAll()</span><span class="s0">;</span>
+<a name="l60"><span class="ln">60   </span></a>        <span class="s1">request.setAttribute(</span><span class="s3">&quot;goodsList&quot;</span><span class="s0">, </span><span class="s1">goodsList)</span><span class="s0">;</span>
+<a name="l61"><span class="ln">61   </span></a>        <span class="s1">request.setAttribute(</span><span class="s3">&quot;goodsMap&quot;</span><span class="s0">, </span><span class="s1">goodsMap)</span><span class="s0">;</span>
+<a name="l62"><span class="ln">62   </span></a>        <span class="s1">request.setAttribute(</span><span class="s3">&quot;contract&quot;</span><span class="s0">, </span><span class="s1">contract)</span><span class="s0">;</span>
+<a name="l63"><span class="ln">63   </span></a>        <span class="s1">List&lt;Contract&gt; contractList = contractDao.findAll()</span><span class="s0">;</span>
+<a name="l64"><span class="ln">64   </span></a>        <span class="s1">request.setAttribute(</span><span class="s3">&quot;contractList&quot;</span><span class="s0">, </span><span class="s1">contractList)</span><span class="s0">;</span>
+<a name="l65"><span class="ln">65   </span></a>
+<a name="l66"><span class="ln">66   </span></a>
+<a name="l67"><span class="ln">67   </span></a>        <span class="s1">ObjectMapper objectMapper = </span><span class="s0">new </span><span class="s1">ObjectMapper()</span><span class="s0">;</span>
+<a name="l68"><span class="ln">68   </span></a>        <span class="s1">String json = objectMapper.writeValueAsString(goodsMap)</span><span class="s0">; </span><span class="s2">// 转换成JSON格式</span>
+<a name="l69"><span class="ln">69   </span></a>        <span class="s1">response.setContentType(</span><span class="s3">&quot;application/json&quot;</span><span class="s1">)</span><span class="s0">;</span>
+<a name="l70"><span class="ln">70   </span></a>        <span class="s1">response.setCharacterEncoding(</span><span class="s3">&quot;UTF-8&quot;</span><span class="s1">)</span><span class="s0">;</span>
+<a name="l71"><span class="ln">71   </span></a>        <span class="s1">response.getWriter().write(json)</span><span class="s0">;</span>
+<a name="l72"><span class="ln">72   </span></a>        <span class="s1">request.getRequestDispatcher(</span><span class="s3">&quot;/index.jsp&quot;</span><span class="s1">).forward(request</span><span class="s0">, </span><span class="s1">response)</span><span class="s0">;</span>
+<a name="l73"><span class="ln">73   </span></a>    <span class="s1">}</span>
+<a name="l74"><span class="ln">74   </span></a><span class="s1">}</span>
+<a name="l75"><span class="ln">75   </span></a></pre>
+</body>
+</html>

@@ -52,8 +52,10 @@ public class PaymentServlet extends HttpServlet {
 
         // 读取表单数据
         int contractId = Integer.parseInt(request.getParameter("payment_contract_id"));
-        int purchaseListId = -1;
-
+        Contract contract = new Contract();
+        ContractDaoImpl contractDaoImpl = new ContractDaoImpl();
+        contract = contractDaoImpl.getContractById(contractId);
+        int purchaseListId = contract.getPurchaseListId();
         // 获取商品信息
         List<PurchaseListItem> purchaseListItems = new ArrayList<>();
         // 获取所有被选中的商品
@@ -109,8 +111,27 @@ public class PaymentServlet extends HttpServlet {
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
+            try {
+                // 开启事务 ,需要借助框架，这里是jdbc手写的
+                paymentDao.insertPayment(payment);
+                // 减少库存
+                for (PurchaseListItem item : purchaseListItems) {
+                    goodsDao.decreaseStock(item.getGoodsId(), item.getQuantity());
+                }
 
-// 重定向到合同列表页面
+                // 修改合同状态
+                ContractDaoImpl contractDao = new ContractDaoImpl();
+                contractDao.updateStatus(contractId, "InProgress");
+
+                // 提交事务
+            } catch (SQLException ex) {
+                // 回滚事务
+                throw new RuntimeException(ex);
+            } finally {
+                // 释放连接
+            }
+
+// 重定向到支付列表页面
             response.sendRedirect(request.getContextPath() + "/creatPayment.jsp");
 
         }

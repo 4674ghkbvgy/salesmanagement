@@ -12,8 +12,7 @@ public interface ContractDao {
     List<Contract> findAll();
     List<Contract> findByUser(User user);
 
-    int save(Contract contract);
-    int update(Contract contract);
     int deleteById(int id);
+    void updateStatus(int contractId, String status) throws SQLException;
     void createContractAndPurchaseList(Contract contract, PurchaseList purchaseList, List<PurchaseListItem> purchaseListItems) throws SQLException;
 }

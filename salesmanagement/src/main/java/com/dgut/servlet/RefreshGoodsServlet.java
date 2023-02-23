@@ -32,11 +32,11 @@ public class RefreshGoodsServlet extends HttpServlet {
         request.setAttribute("goodsList", goodsList);
 
         UserDao userDao= new UserDao();
-        List<User> salespersonList = userDao.findAllSalesperson();  // 从数据库或其他地方获取销售员信息
+        List<User> salespersonList = userDao.findAllSalesperson();  // 获取销售员信息
         request.setAttribute("salespersonList", salespersonList);
 
 
-        List<User> UserList = userDao.findAllUser();  // 从数据库或其他地方获取销售员信息
+        List<User> UserList = userDao.findAllUser();  //获取销售员信息
         request.setAttribute("userList", UserList);
 //        request.getRequestDispatcher("./index.jsp").forward(request, response);
 
